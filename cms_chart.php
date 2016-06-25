@@ -610,8 +610,8 @@ function cms_chart_line($data, $color, $zoom, $xVal, $yVal0, $valShow, $valAngle
             if ($valShow) $dot .= cms_chart_val($valAngle, $x, $y - 15, 0, 0, cms_chart_axis_format($v, $yFormat));
         }
         echo "\n" . '    <g fill="#'. $color[$i % $cNum] .'">';
-        echo "\n" . '      <path d="M'. substr($line, 1) .'" class="line" stroke="#'. $color[$i++ % $cNum] .'"/>';
-        echo $dot;
+        echo "\n" . '      <path d="M'. substr($line, 1) .'" class="line" stroke-linejoin="round" stroke="#' . $color[$i++ % $cNum] .'"/>';
+//        echo $dot;
         echo "\n" . '    </g>';
     }
 }
@@ -651,9 +651,9 @@ function cms_chart_css($css, $style) {
     if ($css) echo '
 <![CDATA[
 svg.chart{display:block}
-.chart-bg{fill:#eee;opacity:.5}
-.chart-box{fill:#fff;opacity:1}
-.chart-tick line{stroke:#ddd;stroke-width:1;stroke-dasharray:5,5}
+.chart-bg{fill:transparent;opacity:1}
+.chart-box{fill:transparent;opacity:1}
+.chart-tick line{stroke:#000;stroke-width:1;opacity:0.1}
 .chart text{font-family:Helvetica,Arial,Verdana,sans-serif;font-size:12px;fill:#666}
 .axisX text{text-anchor:middle}
 .xAngle text{text-anchor:start}
