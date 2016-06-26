@@ -92,29 +92,38 @@ foreach ($chartData as $x => $y) {
   ';
 }
 
-$numLabels = floor($height / 50);
-$labelModulation = 2 * 10 ** (1 + floor(-log($yRange / $numLabels, 10)));
-$labelInterval = round($yRange / $numLabels * $labelModulation) / $labelModulation;
+$numLabels = floor($height / 25);
+$labelModulation = 10 ** (1 + floor(-log($yRange / $numLabels, 10)));// / 5;
+$labelInterval = ceil($yRange / $numLabels * $labelModulation) / $labelModulation;
 
+// Top and bottom grid lines
 $gridLines =
 "M0,0 ".$width.",0
 M0,".$height.",".$width.",".$height."
 ";
 
+// Top and bottom grid labels
 $gridText =
   '<text x="-4" y="4">'.labelFormat($yMax).'</text>' .
   '<text x="-4" y="'.($height + 4).'">'.labelFormat($yMin).'</text>';
 
+// Start at the first "nice" Y value > min + 50% of the interval
+// Keep going until max - 50% of the interval
+// Add Interval each iteration
 for (
-  $labelY = $yMin + 0.5 * $labelInterval - fmod($yMin + 0.5 * $labelInterval , $labelInterval) + $labelInterval;
-  $labelY < $yMax - 0.5 * $labelInterval;
+  $labelY = $yMin - fmod($yMin, $labelInterval) + $labelInterval;
+  $labelY < $yMax;
   $labelY += $labelInterval
 ) {
-
   $labelHeight = transformY($labelY);
   $gridLines .= "M0,".$labelHeight." ".$width.",".$labelHeight."
   ";
-  $gridText .= '<text	x="-4" y="'.($labelHeight + 4).'">'.labelFormat($labelY).'</text>';
+  if (
+    $labelY < $yMax - 0.4 * $labelInterval &&
+    $labelY > $yMin + 0.4 * $labelInterval
+  ) {
+    $gridText .= '<text	x="-4" y="'.($labelHeight + 4).'">'.labelFormat($labelY).'</text>';
+  }
 }
 
 // in case some dingbat has PHP short tags enabled
@@ -133,8 +142,8 @@ echo '<'.'?xml version="1.0" standalone="no"?'.'>';
       <circle cx="1" cy="1" r="1" style="stroke: none; fill:#000000;"/>
     </marker>
     <linearGradient id="fadeFromNothing" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1C75BC" stop-opacity="0"></stop>
-      <stop offset="2.5%" stop-color="#1C75BC" stop-opacity="1"></stop>
+      <stop offset="0.5%" stop-color="#1C75BC" stop-opacity="0"></stop>
+      <stop offset="5%" stop-color="#1C75BC" stop-opacity="1"></stop>
       <stop offset="100%" stop-color="#1C75BC" stop-opacity="1"></stop>
     </linearGradient>
       <style type="text/css"><![CDATA[
