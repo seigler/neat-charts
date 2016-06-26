@@ -12,3 +12,8 @@ Extract the files from https://github.com/seigler/Dash-SVG-chart/archive/master.
 
 ## Usage
 `<img src="path to the folder where you cloned this project">`
+
+## Credits
+
+* PHP output buffering based on http://www.the-art-of-web.com/php/buffer/
+* Chart appearance based on advice found at http://vis4.net/blog/posts/doing-the-line-charts-right/
