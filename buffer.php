@@ -40,6 +40,7 @@
     }
 
     // if so, display cache file and stop processing
+    header("Expires: ".gmdate("D, d M Y H:i:s", $last_modified_time + CACHE_TIME)." GMT");
     readfile($file);
     exit;
   }
@@ -57,6 +58,7 @@
     // always send headers
     header("Last-Modified: ".gmdate("D, d M Y H:i:s", $last_modified_time)." GMT");
     header("Etag: $etag");
+    header("Expires: ".gmdate("D, d M Y H:i:s", $last_modified_time + CACHE_TIME)." GMT");
 
     return $content;
   }
