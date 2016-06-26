@@ -44,8 +44,8 @@ foreach ($last24h as $datum) {
   }
   $previousValue = $thisY;
 }
-end($chartData); // already at end, not needed
 $yRange = $yMax - $yMin;
+end($chartData);
 $xMax = key($chartData);
 reset($chartData);
 $xMin = key($chartData);
