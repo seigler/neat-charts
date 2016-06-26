@@ -3,6 +3,8 @@
   // Based on PHP code by Dennis Pallett: www.phpit.net
   // Please acknowledge use of this code by including this header.
 
+  // Updated to include and use last-modified and etag headers
+
   // location and prefix for cache files
   define('CACHE_PATH', "/tmp/cache_");
 
@@ -22,7 +24,20 @@
 
     // check that cache file exists and is not too old
     if(!file_exists($file)) return;
-    if(filemtime($file) < time() - CACHE_TIME) return;
+    $last_modified_time = filemtime($file);
+    if($last_modified_time < time() - CACHE_TIME) return;
+    $etag = md5_file($file);
+
+    // always send headers
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s", $last_modified_time)." GMT");
+    header("Etag: $etag");
+
+    // exit if not modified
+    if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time ||
+        @trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
+        header("HTTP/1.1 304 Not Modified");
+        exit;
+    }
 
     // if so, display cache file and stop processing
     readfile($file);
@@ -36,6 +51,13 @@
       fwrite($f, $content);
       fclose($f);
     }
+    $last_modified_time = filemtime($file);
+    $etag = md5_file($file);
+
+    // always send headers
+    header("Last-Modified: ".gmdate("D, d M Y H:i:s", $last_modified_time)." GMT");
+    header("Etag: $etag");
+
     return $content;
   }
 
