@@ -31,6 +31,7 @@
     // always send headers
     header("Last-Modified: ".gmdate("D, d M Y H:i:s", $last_modified_time)." GMT");
     header("Etag: $etag");
+    header("Expires: ".gmdate("D, d M Y H:i:s", $last_modified_time + CACHE_TIME)." GMT");
 
     // exit if not modified
     if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time ||
@@ -40,7 +41,6 @@
     }
 
     // if so, display cache file and stop processing
-    header("Expires: ".gmdate("D, d M Y H:i:s", $last_modified_time + CACHE_TIME)." GMT");
     readfile($file);
     exit;
   }
@@ -52,7 +52,7 @@
       fwrite($f, $content);
       fclose($f);
     }
-    $last_modified_time = filemtime($file);
+    $last_modified_time = time();
     $etag = md5_file($file);
 
     // always send headers
