@@ -53,7 +53,7 @@
       fclose($f);
     }
     $last_modified_time = time();
-    $etag = md5_file($file);
+    $etag = md5_file('buffer'.$file);
 
     // always send headers
     header("Last-Modified: ".gmdate("D, d M Y H:i:s", $last_modified_time)." GMT");
