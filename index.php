@@ -167,4 +167,3 @@ echo '<'.'?xml version="1.0" standalone="no"?'.'>';
   </g>
   <path class="chart__plotLine" d="<?= $chartPoints ?>" />
 </svg>
-
