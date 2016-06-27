@@ -1,7 +1,7 @@
 # Dash-SVG-chart
 PHP project to generate cached SVG price charts
 
-![Dash 24h price in BTC](http://cryptohistory.org/dash/24h/)
+![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/dash/24h/)
 
 ## Requirements
 
