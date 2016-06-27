@@ -33,6 +33,9 @@
     header("Etag: $etag");
     header("Expires: ".gmdate("D, d M Y H:i:s", $last_modified_time + CACHE_TIME)." GMT");
 
+    // tell any caches that I really mean it with these other headers
+    header("Cache-Control: max-age=".CACHE_TIME.", must-revalidate");
+
     // exit if not modified
     if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) == $last_modified_time ||
         @trim($_SERVER['HTTP_IF_NONE_MATCH']) == $etag) {
