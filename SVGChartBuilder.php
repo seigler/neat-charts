@@ -104,8 +104,8 @@ class SVGChartBuilder {
     ) {
       $labelHeight = transformY($labelY, $yMax, $yRange, $height);
       if (
-        $labelY < $yMax - 0.05 * $labelInterval &&
-        $labelY > $yMin + 0.05 * $labelInterval
+        $labelY < $yMax - 0.1 * $labelInterval &&
+        $labelY > $yMin + 0.1 * $labelInterval
       ) {
         $gridLines .= " M0,".$labelHeight." ".$width.",".$labelHeight;
       }
@@ -139,7 +139,8 @@ class SVGChartBuilder {
           font-family: sans-serif;
           font-size: 10;
           fill: #7f7f7f;
-          text-anchor:end;
+          text-anchor: end;
+          shape-rendering: crispEdges;
         }
         .chart__gridLinePaths {
           fill: none;
