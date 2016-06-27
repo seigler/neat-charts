@@ -8,20 +8,6 @@ class SVGChartBuilder {
     $yMin = $xMin = INF;
     $yMax = $xMax = -INF;
 
-    function median($arr) {
-      sort($arr);
-      $count = count($arr); //total numbers in array
-      $middleval = floor(($count-1)/2); // find the middle value, or the lowest middle value
-      if($count % 2) { // odd number, middle is the median
-          $median = $arr[$middleval];
-      } else { // even number, calculate avg of 2 medians
-          $low = $arr[$middleval];
-          $high = $arr[$middleval+1];
-          $median = (($low+$high)/2);
-      }
-      return $median;
-    }
-
     foreach ($chartData as $thisX => $thisY) {
       if (!is_null($previousValue)) {
         $absoluteDeltas[] = abs($thisY - $previousValue);
@@ -43,7 +29,7 @@ class SVGChartBuilder {
     $xMin = key($chartData);
     $xRange = $xMax - $xMin;
     $count = count($chartData);
-    $medianDelta = abs(median($absoluteDeltas));
+    $averageDelta = abs(array_sum($absoluteDeltas)/$count);
 
     /*
     We want the height of the median y-delta to be the same as
@@ -51,15 +37,11 @@ class SVGChartBuilder {
     45 degrees. This improves comprehension.
     http://vis4.net/blog/posts/doing-the-line-charts-right/
     */
-    $aspectRatio = $yRange / $medianDelta / $count;
+    $aspectRatio = max(0.25, $yRange / $averageDelta / $count);
     $height = floor($aspectRatio * $width);
 
-    function labelFormat($float, $sigFigs = 4, $minPlaces = 1) {
-      return number_format($float, max(
-        $minPlaces,
-        $sigFigs + floor(-log($float, 10)))
-        /* this floor(log) thing is the first significant place value */
-      );
+    function labelFormat($float, $sigFigs, $minPlaces = 0) {
+      return number_format($float, max($minPlaces, $sigFigs));
     }
 
     /* Transform data coords to chart coords */
@@ -75,26 +57,42 @@ class SVGChartBuilder {
       , 2);
     }
 
+    function getPrecision($value) { // thanks http://stackoverflow.com/a/21788335/5402566
+      if (!is_numeric($value)) { return false; }
+      $decimal = $value - floor($value); //get the decimal portion of the number
+      if ($decimal == 0) { return 0; } //if it's a whole number
+      $precision = strlen(trim(number_format($decimal,10),"0")) - 1; //-2 to account for "0."
+      return $precision;
+    }
+
     $chartPoints = "M";
     foreach ($chartData as $x => $y) {
       $chartPoints .= transformX($x, $xMin, $xRange, $width) . ',' . transformY($y, $yMax, $yRange, $height) . '
       ';
     }
 
-    $numLabels = floor($height / 25);
-    $labelModulation = 10 ** (1 + floor(-log($yRange / $numLabels, 10)));// / 5;
-    $labelInterval = ceil($yRange / $numLabels * $labelModulation) / $labelModulation;
+    $numLabels = min(4, ceil($height / 40));
+    $labelInterval = $yRange / $numLabels;
+    $labelModulation = 10 ** (1 + floor(-log($yRange / $numLabels, 10)));
+//    if (fmod($labelInterval, $labelModulation / 5) < $labelInterval * 0.5) {
+      $labelModulation /= 2.5;
+//    } else if (fmod($labelInterval, $labelModulation / 2) < $labelInterval * 0.25) {
+//      $labelModulation /= 2;
+//    }
+//    var_dump($labelInterval, $labelModulation, $labelInterval * $labelModulation, ceil($labelInterval * $labelModulation) / $labelModulation);
+    $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
+    $labelPlaces = getPrecision($labelInterval);
 
     // Top and bottom grid lines
     $gridLines =
-    "M0,0 ".$width.",0
-    M0,".$height.",".$width.",".$height."
+    "M10,0 ".$width.",0
+    M10,".$height.",".$width.",".$height."
     ";
 
     // Top and bottom grid labels
     $gridText =
-      '<text x="-4" y="4">'.labelFormat($yMax).'</text>' .
-      '<text x="-4" y="'.($height + 4).'">'.labelFormat($yMin).'</text>';
+      '<text x="6" y="4">'.labelFormat($yMax, $labelPlaces + 1).'</text>' .
+      '<text x="6" y="'.($height + 4).'">'.labelFormat($yMin, $labelPlaces + 1).'</text>';
 
     // Start at the first "nice" Y value > min + 50% of the interval
     // Keep going until max - 50% of the interval
@@ -106,12 +104,16 @@ class SVGChartBuilder {
     ) {
       $labelHeight = transformY($labelY, $yMax, $yRange, $height);
       if (
-        $labelY < $yMax - 0.4 * $labelInterval &&
-        $labelY > $yMin + 0.4 * $labelInterval
+        $labelY < $yMax - 0.05 * $labelInterval &&
+        $labelY > $yMin + 0.05 * $labelInterval
       ) {
-        $gridLines .= "M0,".$labelHeight." ".$width.",".$labelHeight."
-        ";
-        $gridText .= '<text	x="-4" y="'.($labelHeight + 4).'">'.labelFormat($labelY).'</text>';
+        $gridLines .= " M0,".$labelHeight." ".$width.",".$labelHeight;
+      }
+      if (
+        $labelY < $yMax - 0.3 * $labelInterval &&
+        $labelY > $yMin + 0.3 * $labelInterval
+      ) {
+        $gridText .= '<text	x="-4" y="'.($labelHeight + 4).'">'.labelFormat($labelY, $labelPlaces).'</text>';
       }
     }
 
