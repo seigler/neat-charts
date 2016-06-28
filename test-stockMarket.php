@@ -20,7 +20,7 @@ spl_autoload_register(function ($class_name) {
 $chartData = [];
 
 $offset = 100 * (rand()/getRandMax())**4;
-$scale = 100 * (rand()/getRandMax())**4;
+$scale = 100 * (rand()/getRandMax())**2;
 $volatility = 0.5 * (rand()/getRandMax())**3;
 
 for ($n = 0, $current = $offset + 0.5 * $scale; $n < 96; $n++) {
@@ -30,4 +30,10 @@ for ($n = 0, $current = $offset + 0.5 * $scale; $n < 96; $n++) {
   $chartData[$n] = $current;
 }
 
-print SVGChartBuilder::renderStockChart($chartData, 1000, "#708", "#777", false);
+print SVGChartBuilder::renderStockChart($chartData, [
+  'width'=>1000,
+  'height'=>250,
+  'lineColor'=>"#708",
+  'labelColor'=>"#777",
+  'smoothed'=>false
+]);

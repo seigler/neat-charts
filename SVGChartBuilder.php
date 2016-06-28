@@ -2,7 +2,17 @@
 
 class SVGChartBuilder {
 
-  public static function renderStockChart($chartData, $width = 700, $lineColor = "#FF2F00", $gridLabelColor = "#999", $smoothed = false) {
+  public static function renderStockChart($chartData, $options) {
+    function arrayGet($array, $key, $default = NULL)
+    {
+        return isset($array[$key]) ? $array[$key] : $default;
+    }
+
+    $width = arrayGet($options, "width", 800) - 100;
+    $height = arrayGet($options, "height");
+    $lineColor = arrayGet($options, "lineColor", "#FF2F00");
+    $labelColor = arrayGet($options, "labelColor", "#999");
+    $smoothed = arrayGet($options, "smoothed", false);
     // we assume $chartData is sorted by key and keys and values are all numeric
     $previousY = $previousY = null;
     end($chartData);
@@ -40,33 +50,35 @@ class SVGChartBuilder {
     $yRange = $yMax - $yMin;
     $averageAbsSlope /= $yRange * $deltaX; // turn this absolute-deltas total into a slope
 
-    // take all these slopes and average them with their neighbors
-    // unless they change direction, then make them zero
-    // also restrict them a bit when they are very different
-    $previousSecant = $previousX = null;
-    foreach ($secants as $x => $secant) {
-      if (!is_null($previousSecant)) {
-        $tangents[$x] = ($secant + $previousSecant) / 2;
-        if ($secant == 0 || $previousSecant == 0 || $secant * $previousSecant <= 0)
-        {
-          $tangents[$x] = 0;
-        } else {
-          if ($tangents[$x] / $previousSecant > 3) {
-            $tangents[$x] = 3 * $previousSecant;
-          } else if ($tangents[$x] / $secant > 3) {
-            $tangents[$x] = 3 * $secant;
+    if ($smoothed) {
+      // take all these slopes and average them with their neighbors
+      // unless they change direction, then make them zero
+      // also restrict them a bit when they are very different
+      $previousSecant = $previousX = null;
+      foreach ($secants as $x => $secant) {
+        if (!is_null($previousSecant)) {
+          $tangents[$x] = ($secant + $previousSecant) / 2;
+          if ($secant == 0 || $previousSecant == 0 || $secant * $previousSecant <= 0)
+          {
+            $tangents[$x] = 0;
+          } else {
+            if ($tangents[$x] / $previousSecant > 3) {
+              $tangents[$x] = 3 * $previousSecant;
+            } else if ($tangents[$x] / $secant > 3) {
+              $tangents[$x] = 3 * $secant;
+            }
           }
         }
-      }
-      if ($x == $xMax) {
-        $tangents[$x] = $secant;
-      }
-      if ($x == $xMin) {
-        $tangents[$x] = $secant;
-      }
+        if ($x == $xMax) {
+          $tangents[$x] = $secant;
+        }
+        if ($x == $xMin) {
+          $tangents[$x] = $secant;
+        }
 
-      $previousX = $x;
-      $previousSecant = $secant;
+        $previousX = $x;
+        $previousSecant = $secant;
+      }
     }
 
     /*
@@ -114,18 +126,20 @@ class SVGChartBuilder {
         transformX($x, $xMin, $xRange, $width).",".
         transformY($y, $yMax, $yRange, $height) . "\n";
 
-      $controlX = $deltaX / 3 / sqrt(1 + $tangents[$x]**2);
-      $controlY = $tangents[$x] * $controlX;
-      if ($x != $xMin) {
-        $chartSplines .= " S".
-          transformX($x - $controlX, $xMin, $xRange, $width).",".
-          transformY($y - $controlY, $yMax, $yRange, $height)." ".
-          transformX($x, $xMin, $xRange, $width).",".
-          transformY($y, $yMax, $yRange, $height);
+      if ($smoothed) {
+        $controlX = $deltaX / 3 / sqrt(1 + $tangents[$x]**2);
+        $controlY = $tangents[$x] * $controlX;
+        if ($x != $xMin) {
+          $chartSplines .= " S".
+            transformX($x - $controlX, $xMin, $xRange, $width).",".
+            transformY($y - $controlY, $yMax, $yRange, $height)." ".
+            transformX($x, $xMin, $xRange, $width).",".
+            transformY($y, $yMax, $yRange, $height);
+        }
       }
     }
 
-    $numLabels = 1 + ceil($height / 60);
+    $numLabels = 2 + ceil($height / 60);
     $labelInterval = $yRange / $numLabels;
     $labelModulation = 10 ** (1 + floor(-log($yRange / $numLabels, 10)));
 
@@ -192,7 +206,7 @@ class SVGChartBuilder {
         .chart__gridLines {
           font-family: sans-serif;
           font-size: 10;
-          fill: '.( $gridLabelColor ).';
+          fill: '.( $labelColor ).';
           text-anchor: end;
           shape-rendering: crispEdges;
         }
