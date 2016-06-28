@@ -8,7 +8,6 @@ hammering Poloniex half to death.
 
 */
 
-
 ini_set('display_errors', 1);
 //include 'buffer.php';
 
@@ -20,12 +19,16 @@ spl_autoload_register(function ($class_name) {
 
 $chartData = [];
 
-$start = 0.01;// * rand()/getRandMax();
-$volatility = 0.002;
+$start = 100 * (rand()/getRandMax())**3;
+$volatility = rand()/getRandMax();
+$velocity = (rand()/getRandMax() - 0.5);
+$acceleration = 0.1 * (rand()/getRandMax())**2;
 
-for ($n = 0, $current = $start; $n < 50; $n++) {
-  $current += $volatility * (rand()/getRandMax() - 0.5)**3;
+for ($n = 0, $current = $start; $n < 24; $n++) {
+  $velocity *= 0.5;
+  $velocity += $acceleration * 2 * (rand()/getRandMax() - 0.5);
+  $current += $velocity;
   $chartData[$n] = $current;
 }
 
-print SVGChartBuilder::renderStockChart($chartData);
+print SVGChartBuilder::renderStockChart($chartData, 1000, "#708", "#777", true);
