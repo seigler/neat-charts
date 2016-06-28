@@ -11,7 +11,27 @@ PHP project to generate cached SVG price charts
 Extract the files from https://github.com/seigler/Dash-SVG-chart/archive/master.zip where you want to use the chart, or from the command line run `git clone "https://github.com/seigler/Dash-SVG-chart" .` in the folder where you want the charts served from.
 
 ## Usage
-`<img src="path to the folder where you cloned this project">`
+In your PHP file:
+
+```php
+Header('Content-type: image/svg+xml; charset=utf-8');
+Header('Content-Disposition: inline; filename="Dash-24h-chart-' . date('Y-m-d\THisT') . '.svg"');
+include 'buffer.php';
+include 'SVGChartBuilder.php';
+
+/* your code here to generate $chartData */
+
+print SVGChartBuilder::renderStockChart($chartData, [
+  'width'=>800,
+  'height'=>250,
+  'lineColor'=>"#1C75BC",
+  'labelColor'=>"#777",
+  'smoothed'=>false
+]);
+```
+
+In your HTML:
+`<img src="path to the PHP file">`
 
 ## Credits
 

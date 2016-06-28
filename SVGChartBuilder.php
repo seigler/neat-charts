@@ -88,7 +88,7 @@ class SVGChartBuilder {
     http://vis4.net/blog/posts/doing-the-line-charts-right/
     */
     $aspectRatio = max(0.25, min(0.75, 1 / $averageAbsSlope));
-    $height = floor($aspectRatio * $width);
+    $height = $height ?? floor($aspectRatio * $width);
 
     function labelFormat($float, $places, $minPlaces = 0) {
       $value = number_format($float, max($minPlaces, $places));

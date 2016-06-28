@@ -25,4 +25,10 @@ foreach ($last24h as $item) {
   $chartData[$item->date] = $item->weightedAverage;
 }
 
-print SVGChartBuilder::renderStockChart($chartData, 700, "#1C75BC");
+print SVGChartBuilder::renderStockChart($chartData, [
+  'width'=>800,
+  'height'=>250,
+  'lineColor'=>"#1C75BC",
+  'labelColor'=>"#777",
+  'smoothed'=>false
+]);
