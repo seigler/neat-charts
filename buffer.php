@@ -1,4 +1,4 @@
-<?PHP
+<?php
   // Adapted for The Art of Web: www.the-art-of-web.com
   // Based on PHP code by Dennis Pallett: www.phpit.net
   // Please acknowledge use of this code by including this header.
