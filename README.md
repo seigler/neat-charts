@@ -15,7 +15,7 @@ In your PHP file:
 
 ```php
 Header('Content-type: image/svg+xml; charset=utf-8');
-Header('Content-Disposition: inline; filename="Dash-24h-chart-' . date('Y-m-d\THisT') . '.svg"');
+Header('Content-Disposition: inline; filename="chart-' . date('Y-m-d\THisT') . '.svg"');
 include 'buffer.php';
 include 'SVGChartBuilder.php';
 
