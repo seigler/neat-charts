@@ -3,11 +3,8 @@
 
 Header('Content-type: image/svg+xml; charset=utf-8');
 Header('Content-Disposition: inline; filename="Dash-24h-chart-' . date('Y-m-d\THisT') . '.svg"');
-include 'buffer.php';
-
-spl_autoload_register(function ($class_name) {
-    include $class_name . ".php";
-});
+require 'buffer.php';
+require '../src/NeatCharts/LineChart.php'; // really just use composer instead
 
 function getJson($url) {
   if (empty($url)) {
@@ -43,7 +40,7 @@ foreach ($last24h as $item) {
   $chartData[$item->date] = $item->weightedAverage;
 }
 
-$poloniexChart = new SVGChartBuilder($chartData, [
+$poloniexChart = new NeatCharts\LineChart($chartData, [
   'width'=>800,
   'height'=>250,
   'lineColor'=>"#1C75BC", // Dash blue

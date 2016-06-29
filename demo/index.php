@@ -22,7 +22,7 @@
 
 <body>
   <header>
-    <h1>PHP SVG Chart Builder: chart demos</h1>
+    <h1>NeatCharts demo</h1>
   </header>
   <main>
     <section>
@@ -34,10 +34,7 @@
       <h2>Fake Stock Market Data</h2>
 <?php
 ini_set('display_errors', 1);
-
-spl_autoload_register(function ($class_name) {
-    include $class_name . ".php";
-});
+require '../src/NeatCharts/LineChart.php'; // just use composer instead of this
 
 // fake up some stock market data
 
@@ -54,7 +51,7 @@ for ($n = 0, $current = $offset + 0.5 * $scale; $n < 96; $n++) {
   $chartData[$n] = $current;
 }
 
-$stockChart = new SVGChartBuilder($chartData, [
+$stockChart = new NeatCharts\LineChart($chartData, [
   "width"=>500,
   "height"=>150,
   "fontSize"=>10
@@ -80,7 +77,7 @@ for ($n = 0, $current = $start; $n < 12; $n++) {
   $chartData[$n] = $current;
 }
 
-$tempChart = new SVGChartBuilder($chartData,  [
+$tempChart = new NeatCharts\LineChart($chartData,  [
   "width"=>700,
   "height"=>400,
   "lineColor"=>"#D00",

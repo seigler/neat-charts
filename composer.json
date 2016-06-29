@@ -1,0 +1,8 @@
+{
+    "name": "seigler/neat-charts",
+    "autoload": {
+        "psr-0" : {
+            "NeatCharts\\LineChart" : "src"
+        }
+    }
+}

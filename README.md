@@ -1,7 +1,8 @@
-# Dash-SVG-chart
-PHP project to generate cached SVG price charts
+# neat-charts
+PHP project to generate clean-looking SVG price charts
 
 ![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/dash/24h/)
+24h of Dash price in Bitcoin from Poloniex.com
 
 ## Requirements
 
@@ -14,20 +15,24 @@ Extract the files from https://github.com/seigler/Dash-SVG-chart/archive/master.
 In your PHP file:
 
 ```php
+<?php
 Header('Content-type: image/svg+xml; charset=utf-8');
 Header('Content-Disposition: inline; filename="chart-' . date('Y-m-d\THisT') . '.svg"');
 include 'buffer.php';
-include 'SVGChartBuilder.php';
+include 'NeatChart/LineChart.php';
 
-/* your code here to generate $chartData */
+/*
+your code here to populate $chartData
+*/
 
-print SVGChartBuilder::renderStockChart($chartData, [
+$chart = new NeatChart/LineChart($chartData, [ // all parameters optional
   'width'=>800,
   'height'=>250,
   'lineColor'=>"#1C75BC",
   'labelColor'=>"#777",
   'smoothed'=>false
 ]);
+print $chart->render();
 ```
 
 In your HTML:
