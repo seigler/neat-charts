@@ -193,8 +193,8 @@ class SVGChartBuilder {
 
     // Top and bottom grid labels
     $gridText =
-      '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] / 2).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
-      '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] / 2 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
+      '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
+      '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
 
     // Main labels and grid lines
     for (
@@ -204,14 +204,14 @@ class SVGChartBuilder {
     ) {
       $labelHeight = $this->transformY($labelY);
       if ( // label is not too close to the min or max
-        $labelHeight < $this->height - 2.5 * $this->options['fontSize'] &&
-        $labelHeight > $this->options['fontSize'] * 2.5
+        $labelHeight < $this->height - 1.5 * $this->options['fontSize'] &&
+        $labelHeight > $this->options['fontSize'] * 1.5
       ) {
-        $gridText .= '<text	x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] / 2).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
+        $gridText .= '<text	x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
         $gridLines .= ' M0,'.$labelHeight.' '.$this->width.','.$labelHeight;
       } else if ( // label is too close
-          $labelHeight < $this->height - $this->options['fontSize'] / 2 &&
-          $labelHeight > $this->options['fontSize'] / 2
+          $labelHeight < $this->height - $this->options['fontSize'] * 0.75 &&
+          $labelHeight > $this->options['fontSize'] * 0.75
         ) {
           $gridLines .= ' M'.( // move grid line over when it's very close to the min or max label
             $labelHeight < $this->height - $this->options['fontSize'] / 2 && $labelHeight > $this->options['fontSize'] / 2 ? 0 : $this->options['fontSize'] / 2

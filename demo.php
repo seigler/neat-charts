@@ -21,6 +21,9 @@
 </head>
 
 <body>
+  <header>
+    <h1>PHP SVG Chart Builder: chart demos</h1>
+  </header>
   <main>
     <section>
       <h2>Poloniex Dash/BTC Price</h2>
