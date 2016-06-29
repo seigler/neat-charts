@@ -18,14 +18,14 @@ In your PHP file:
 <?php
 Header('Content-type: image/svg+xml; charset=utf-8');
 Header('Content-Disposition: inline; filename="chart-' . date('Y-m-d\THisT') . '.svg"');
-include 'buffer.php';
-include 'NeatChart/LineChart.php';
+require 'buffer.php'; // feel free to use your own caching instead of this one in the demo folder
+require 'NeatCharts/LineChart.php'; // better to use composer, require "seigler/NeatCharts".
 
 /*
 your code here to populate $chartData
 */
 
-$chart = new NeatChart/LineChart($chartData, [ // all parameters optional
+$chart = new NeatCharts/LineChart($chartData, [ // all parameters optional
   'width'=>800,
   'height'=>250,
   'lineColor'=>"#1C75BC",
