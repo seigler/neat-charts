@@ -193,8 +193,8 @@ namespace NeatCharts {
 
       // Top and bottom grid labels
       $gridText =
-        '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
-        '<text x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
+        '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
+        '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
 
       // Main labels and grid lines
       for (
@@ -207,7 +207,7 @@ namespace NeatCharts {
           $labelHeight < $this->height - 1.5 * $this->options['fontSize'] &&
           $labelHeight > $this->options['fontSize'] * 1.5
         ) {
-          $gridText .= '<text	x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
+          $gridText .= '<text text-anchor="end" x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
           $gridLines .= ' M0,'.$labelHeight.' '.$this->width.','.$labelHeight;
         } else if ( // label is too close
             $labelHeight < $this->height - $this->options['fontSize'] * 0.75 &&
@@ -231,40 +231,33 @@ namespace NeatCharts {
         <stop offset="5%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
         <stop offset="100%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
       </linearGradient>
-      <style type="text/css">
-        <![CDATA[ .SVGChart-'.( $chartID ).' .chart__gridLines {
-          font-family: sans-serif;
-          font-size: '.( $this->options['fontSize'] ).'px;
-          fill: '.( $this->options['labelColor'] ).';
-          text-anchor: end;
-          shape-rendering: crispEdges;
-        }
-
-        .SVGChart-'.( $chartID ).' .chart__gridLinePaths {
-          fill: none;
-          stroke: '.( $this->options['labelColor'] ).';
-          stroke-opacity: 0.75;
-          stroke-width: 1;
-          stroke-dasharray: 2, 2;
-        }
-
-        .SVGChart-'.( $chartID ).' .chart__plotLine {
-          fill: none;
-          stroke-width: '.( $this->options['fontSize'] / 3 ).';
-          stroke-linejoin: round;
-          stroke-linecap: round;
-          stroke: url(#SVGChart-fadeFromNothing-'.( $chartID ).');
-          marker-end: url(#SVGChart-markerCircle-'.( $chartID ).');
-        }
-
-        ]]>
-      </style>
     </defs>
-    <g class="SVGChart SVGChart-'.( $chartID ).'">
-      <g class="chart__gridLines">
-        <path class="chart__gridLinePaths" d="'.( $gridLines ).'" /> '.( $gridText ).'
+    <g class="SVGChart">
+      <g class="chart__gridLines"
+        shape-rendering="crispEdges"
+        fill="none"
+        stroke="'.( $this->options['labelColor'] ).'"
+        stroke-opacity="0.75"
+        stroke-width="1"
+        stroke-dasharray="2, 2"
+      >
+        <path class="chart__gridLinePaths" d="'.( $gridLines ).'" />
       </g>
-      <g class="chart__plotLine">
+      <g class="chart__gridLabels"
+        fill="'.( $this->options['labelColor'] ).'"
+        font-family="sans-serif"
+        font-size="'.( $this->options['fontSize'] ).'px"
+      >
+        '.( $gridText ).'
+      </g>
+      <g class="chart__plotLine"
+        fill="none"
+        stroke-width="'.( $this->options['fontSize'] / 3 ).'"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        stroke="url(#SVGChart-fadeFromNothing-'.( $chartID ).')"
+        marker-end="url(#SVGChart-markerCircle-'.( $chartID ).')"
+      >
         <path d="'.( $this->options['smoothed'] ? $chartSplines : $chartPoints ).'" />
       </g>
     </g>

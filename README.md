@@ -9,17 +9,22 @@ PHP project to generate clean-looking SVG price charts
 * PHP
 
 ## Installation
-Extract the files from https://github.com/seigler/Dash-SVG-chart/archive/master.zip where you want to use the chart, or from the command line run `git clone "https://github.com/seigler/Dash-SVG-chart" .` in the folder where you want the charts served from.
+Best:  
+add a composer dependency on `seigler/neat-charts`.
+
+Next best:  
+Copy the how it's done in `/demo/index.php`.
 
 ## Usage
-In your PHP file:
+With Composer:  
+`composer require seigler/neat-charts`
 
+In your PHP file:  
 ```php
 <?php
 Header('Content-type: image/svg+xml; charset=utf-8');
 Header('Content-Disposition: inline; filename="chart-' . date('Y-m-d\THisT') . '.svg"');
-require 'buffer.php'; // feel free to use your own caching instead of this one in the demo folder
-require 'NeatCharts/LineChart.php'; // better to use composer, require "seigler/NeatCharts".
+require 'NeatCharts/LineChart.php'; // better to use composer, require "seigler/neat-charts".
 
 /*
 your code here to populate $chartData
@@ -40,5 +45,5 @@ In your HTML:
 
 ## Credits
 
-* PHP output buffering based on http://www.the-art-of-web.com/php/buffer/
+* Demo's output caching based on http://www.the-art-of-web.com/php/buffer/
 * Chart appearance based on advice found at http://vis4.net/blog/posts/doing-the-line-charts-right/
