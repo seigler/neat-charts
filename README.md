@@ -1,4 +1,4 @@
-# neat-charts
+# NeatCharts
 PHP project to generate clean-looking SVG price charts
 
 ![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/dash/24h/)
