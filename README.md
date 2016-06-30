@@ -1,4 +1,5 @@
-# NeatCharts
+# seigler/neat-charts [![GitHub stars](https://img.shields.io/github/stars/seigler/neat-charts.svg)](https://github.com/seigler/neat-charts/stargazers) [![Packagist](https://img.shields.io/packagist/dt/seigler/neat-charts.svg)](https://packagist.org/packages/seigler/neat-charts) [![Github All Releases](https://img.shields.io/github/downloads/seigler/neat-charts/total.svg?maxAge=2592000)](https://github.com/seigler/neat-charts) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/seigler/neat-charts/blob/master/LICENSE.txt)
+
 PHP project to generate clean-looking SVG price charts
 
 ![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/dash/24h/)  
@@ -6,29 +7,44 @@ PHP project to generate clean-looking SVG price charts
 
 ## Requirements
 
-* PHP
+* PHP >=5.3.0
 
 ## Installation
-Best:  
-add a composer dependency on `seigler/neat-charts`.
+### Using Composer
 
-Next best:  
-Copy the how it's done in `/demo/index.php`.
+To install using Composer, you will have to install Composer first.
+
+`curl -s https://getcomposer.org/installer | php`
+
+Create a composer.json file in your project root.
+
+```json
+{
+  "require": {
+    "seigler/neat-charts": "@dev"
+  }
+}
+```
+
+Tell Composer to install the required dependencies.
+
+`php composer.phar install`
+
+If you want to use the autoloading provided by Composer, add the following line to your application file.
+
+`require 'vendor/autoload.php';`
+
+You are now ready to use NeatCharts.
+
+### Install NeatCharts manually
+
+Just download the NeatCharts class and require it in your application file.
+
+`require 'NeatCharts.php';`
 
 ## Usage
-With Composer:  
-`composer require seigler/neat-charts`
-
-In your PHP file:  
 ```php
-<?php
 Header('Content-type: image/svg+xml; charset=utf-8');
-Header('Content-Disposition: inline; filename="chart-' . date('Y-m-d\THisT') . '.svg"');
-require 'NeatCharts/LineChart.php'; // better to use composer, require "seigler/neat-charts".
-
-/*
-your code here to populate $chartData
-*/
 
 $chart = new NeatCharts/LineChart($chartData, [ // all parameters optional
   'width'=>800,
@@ -45,5 +61,5 @@ In your HTML:
 
 ## Credits
 
-* Demo's output caching based on http://www.the-art-of-web.com/php/buffer/
+* Demo output caching based on http://www.the-art-of-web.com/php/buffer/
 * Chart appearance based on advice found at http://vis4.net/blog/posts/doing-the-line-charts-right/
