@@ -38,9 +38,13 @@ You are now ready to use NeatCharts.
 
 ### Install NeatCharts manually
 
-Just download the NeatCharts class and require it in your application file.
+Just download the folder `NeatCharts` (in `src`) and place it alongside your php file. Add the following at the top of your PHP file:
 
-`require 'NeatCharts.php';`
+```php
+spl_autoload_extensions(".php");
+spl_autoload_register();
+```
+This will automatically require the correct files when they are referenced, since the namespace and class names match the folder structure.
 
 ## Usage
 ```php
