@@ -1,9 +1,9 @@
-# seigler/neat-charts [![GitHub stars](https://img.shields.io/github/stars/seigler/neat-charts.svg)](https://github.com/seigler/neat-charts/stargazers) [![Packagist](https://img.shields.io/packagist/dt/seigler/neat-charts.svg)](https://packagist.org/packages/seigler/neat-charts) [![Github All Releases](https://img.shields.io/github/downloads/seigler/neat-charts/total.svg?maxAge=2592000)](https://github.com/seigler/neat-charts) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/seigler/neat-charts/blob/master/LICENSE.txt)
+# seigler/neat-charts [![GitHub stars](https://img.shields.io/github/stars/seigler/neat-charts.svg)](https://github.com/seigler/neat-charts/stargazers) [![Packagist](https://img.shields.io/packagist/dt/seigler/neat-charts.svg)](https://packagist.org/packages/seigler/neat-charts) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/seigler/neat-charts/blob/master/LICENSE.txt)
 
 PHP project to generate clean-looking SVG price charts
 
-![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/dash/24h/)  
-24h of Dash price in Bitcoin from Poloniex.com
+![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/charts/dark/dash-btc/7d/svg)  
+7d of Dash price in Bitcoin from Poloniex.com
 
 ## Requirements
 
