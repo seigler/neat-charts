@@ -1,4 +1,4 @@
-# seigler/neat-charts [![GitHub stars](https://img.shields.io/github/stars/seigler/neat-charts.svg)](https://github.com/seigler/neat-charts/stargazers) [![Packagist](https://img.shields.io/packagist/dt/seigler/neat-charts.svg)](https://packagist.org/packages/seigler/neat-charts) [![Github All Releases](https://img.shields.io/github/downloads/seigler/neat-charts/total.svg?maxAge=2592000)](https://github.com/seigler/neat-charts) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/seigler/neat-charts/blob/master/LICENSE.txt)
+# seigler/neat-charts [![GitHub stars](https://img.shields.io/github/stars/seigler/neat-charts.svg)](https://github.com/seigler/neat-charts/stargazers) [![Packagist](https://img.shields.io/packagist/dt/seigler/neat-charts.svg)](https://packagist.org/packages/seigler/neat-charts) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/seigler/neat-charts/blob/master/LICENSE.txt)
 
 PHP project to generate clean-looking SVG price charts
 
