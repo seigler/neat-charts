@@ -66,8 +66,8 @@ namespace NeatCharts {
     }
 
     public abstract function setData($chartData);
-    public function render() {
-      return $this->output;
+    public function render($inline = false) {
+      return ($inline ? '' : '<?xml version="1.0" standalone="no"?>') . $this->output;
     }
   }
 }

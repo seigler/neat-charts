@@ -85,6 +85,23 @@ namespace NeatCharts {
         $this->options['height'] = $this->height + $this->padding['top'] + $this->padding['bottom'];
       }
 
+      $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
+      $labelInterval = $this->yRange / $numLabels;
+      $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
+      // 0.1 here is a fudge factor so we get multiples of 2.5 a little more often
+      if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 0.1) {
+        $labelModulation /= 2.5;
+      } else {
+        $labelModulation /= 2;
+      }
+      $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
+      $labelPrecision = $this->getPrecision($labelInterval);
+
+      $this->padding['left'] = $this->options['fontSize'] * 0.6 * (
+        1 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
+      ) + 10;
+      $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
+
       $chartPoints = 'M';
       $chartSplines = 'M'.
         $this->transformX($this->xMin).','.
@@ -108,19 +125,6 @@ namespace NeatCharts {
             $this->transformY($y) . ' ';
         }
       }
-
-      $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
-      $labelInterval = $this->yRange / $numLabels;
-      $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
-
-      // 0.1 here is a fudge factor so we get multiples of 2.5 a little more often
-      if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 0.1) {
-        $labelModulation /= 2.5;
-      } else {
-        $labelModulation /= 2;
-      }
-      $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
-      $labelPrecision = $this->getPrecision($labelInterval);
 
       // Top and bottom grid lines
       $gridLines =
@@ -156,8 +160,7 @@ namespace NeatCharts {
       }
 
       $chartID = rand();
-      $this->output = '<?xml version="1.0" standalone="no"?>
-  <svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      $this->output = '<svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
       <marker id="SVGChart-markerCircle-'.( $chartID ).'" markerWidth="2" markerHeight="2" refX="1" refY="1" markerUnits="strokeWidth">
         <circle cx="1" cy="1" r="1" style="stroke: none; fill:'.( $this->options['lineColor'] ).';" />
@@ -181,7 +184,7 @@ namespace NeatCharts {
       </g>
       <g class="chart__gridLabels"
         fill="'.( $this->options['labelColor'] ).'"
-        font-family="sans-serif"
+        font-family="monospace"
         font-size="'.( $this->options['fontSize'] ).'px"
       >
         '.( $gridText ).'
