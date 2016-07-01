@@ -1,70 +1,6 @@
 <?php
 namespace NeatCharts {
-  class LineChart {
-    private $options = [
-      'width' => 800,
-      'height' => 250,
-      'lineColor' => '#000',
-      'labelColor' => '#000',
-      'smoothed' => false,
-      'fontSize' => 15
-    ];
-
-    private $width;
-    private $height;
-    private $output;
-    private $xMin;
-    private $xMax;
-    private $xRange;
-    private $yMin;
-    private $yMax;
-    private $yRange;
-    private $padding = ['top'=>10, 'right'=>10, 'bottom'=>10, 'left'=>10];
-
-    private function arrayGet($array, $key, $default = NULL)
-    {
-        return isset($array[$key]) ? $array[$key] : $default;
-    }
-
-    private function labelFormat($float, $places, $minPlaces = 0) {
-      $value = number_format($float, max($minPlaces, $places));
-      // add a trailing space if there's no decimal
-      return (strpos($value, '.') === false ? $value . '.' : $value);
-    }
-
-    /* Transform data coords to chart coords */
-    /* Transform data coords to chart coords */
-    private function transformX($x) {
-      return round(
-        ($x - $this->xMin) / $this->xRange * $this->width
-      , 2);
-    }
-    private function transformY($y) {
-      return round(
-      // SVG has y axis reversed, 0 is at the top
-        ($this->yMax - $y) / $this->yRange * $this->height
-      , 2);
-    }
-
-    private function getPrecision($value) { // thanks http://stackoverflow.com/a/21788335/5402566
-      if (!is_numeric($value)) { return false; }
-      $decimal = $value - floor($value); //get the decimal portion of the number
-      if ($decimal == 0) { return 0; } //if it's a whole number
-      $precision = strlen(trim(number_format($decimal,10),'0')) - 1; //-2 to account for '0.'
-      return $precision;
-    }
-
-    public function __construct($chartData, $options = []) {
-      $this->setOptions($options);
-      $this->setData($chartData);
-    }
-
-    public function setOptions($options) {
-      $this->options = array_replace($this->options, $options);
-      $this->padding['left'] = $this->options['fontSize'] * 5;
-      $this->padding['top'] = $this->padding['bottom'] = $this->options['fontSize'];
-    }
-
+  class LineChart extends NeatChart {
     public function setData($chartData) {
       // we assume $chartData is sorted by key and keys and values are all numeric
       $previousX = $previousY = null;
@@ -262,9 +198,6 @@ namespace NeatCharts {
       </g>
     </g>
   </svg>';
-    }
-    public function render() {
-      return $this->output;
     }
   }
 }
