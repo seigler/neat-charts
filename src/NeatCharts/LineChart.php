@@ -84,7 +84,7 @@ namespace NeatCharts {
         $this->height = floor($aspectRatio * $this->width);
         $this->options['height'] = $this->height + $this->padding['top'] + $this->padding['bottom'];
       }
-
+      $this->padding['left'] = $this->padding['right'] = $this->options['fontSize'] / 2;
       if ($this->options['yAxisEnabled']) {
         $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
         $labelInterval = $this->yRange / $numLabels;
