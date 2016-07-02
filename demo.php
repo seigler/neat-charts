@@ -1,5 +1,20 @@
 <?php
 require_once 'vendor/autoload.php';
+
+function randomData($count = 96) {
+  $randomData = [];
+  $offset = 100 * (rand()/getRandMax())**4;
+  $scale = 100 * (rand()/getRandMax())**2;
+  $volatility = 0.5 * (rand()/getRandMax())**3;
+  for ($n = 0, $current = $offset + 0.5 * $scale; $n < $count; $n++) {
+    $current -= $offset;
+    $current *= 1 + $volatility * (rand()/getRandMax() - 0.5);
+    $current += $offset;
+    $randomData[$n] = $current;
+  }
+  return $randomData;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en-US">
@@ -27,24 +42,31 @@ require_once 'vendor/autoload.php';
       <h2>SVG chart in <code>svg</code> tag</h2>
       <figure>
         <?php
-$chartData = [];
-$offset = 100 * (rand()/getRandMax())**4;
-$scale = 100 * (rand()/getRandMax())**2;
-$volatility = 0.5 * (rand()/getRandMax())**3;
-for ($n = 0, $current = $offset + 0.5 * $scale; $n < 96; $n++) {
-  $current -= $offset;
-  $current *= 1 + $volatility * (rand()/getRandMax() - 0.5);
-  $current += $offset;
-  $chartData[$n] = $current;
-}
-
-$chart = new NeatCharts\LineChart($chartData, [
+$chart = new NeatCharts\LineChart(randomData(), [
   'width'=>800,
   'height'=>250,
   'lineColor'=>'#F00',
   'labelColor'=>'#222',
   'smoothed'=>false,
   'fontSize'=>14
+]);
+echo $chart->render();
+?>
+        <figcaption>Random generated data, loaded right in the page</figcaption>
+      </figure>
+    </section>
+    <section>
+      <h2>SVG sparkline in <code>svg</code> tag</h2>
+      <figure>
+        <?php
+$chart = new NeatCharts\LineChart(randomData(48), [
+  'width'=>100,
+  'height'=>20,
+  'lineColor'=>'#000',
+  'smoothed'=>false,
+  'fontSize'=>2,
+  'yAxisEnabled'=>false,
+  'xAxisEnabled'=>false
 ]);
 echo $chart->render();
 ?>

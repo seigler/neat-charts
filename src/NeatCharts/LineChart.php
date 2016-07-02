@@ -85,22 +85,59 @@ namespace NeatCharts {
         $this->options['height'] = $this->height + $this->padding['top'] + $this->padding['bottom'];
       }
 
-      $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
-      $labelInterval = $this->yRange / $numLabels;
-      $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
-      // 0.1 here is a fudge factor so we get multiples of 2.5 a little more often
-      if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 0.1) {
-        $labelModulation /= 2.5;
-      } else {
-        $labelModulation /= 2;
-      }
-      $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
-      $labelPrecision = $this->getPrecision($labelInterval);
+      if ($this->options['yAxisEnabled']) {
+        $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
+        $labelInterval = $this->yRange / $numLabels;
+        $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
+        // 0.1 here is a fudge factor so we get multiples of 2.5 a little more often
+        if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 0.1) {
+          $labelModulation /= 2.5;
+        } else {
+          $labelModulation /= 2;
+        }
+        $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
+        $labelPrecision = $this->getPrecision($labelInterval);
 
-      $this->padding['left'] = $this->options['fontSize'] * 0.6 * (
-        1 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
-      ) + 10;
-      $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
+        $this->padding['left'] = $this->options['fontSize'] * 0.6 * (
+          1 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
+        ) + 10;
+        $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
+
+        // Top and bottom grid lines
+        $gridLines =
+          'M10,0 '.$this->width.',0 '.
+          ' M10,'.$this->height.','.$this->width.','.$this->height;
+
+        // Top and bottom grid labels
+        $gridText =
+          '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
+          '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
+
+        // Main labels and grid lines
+        for (
+          $labelY = $this->yMin - fmod($this->yMin, $labelInterval) + $labelInterval; // Start at the first "nice" Y value > min
+          $labelY < $this->yMax; // Keep going until max
+          $labelY += $labelInterval // Add Interval each iteration
+        ) {
+          $labelHeight = $this->transformY($labelY);
+          if ( // label is not too close to the min or max
+            $labelHeight < $this->height - 1.5 * $this->options['fontSize'] &&
+            $labelHeight > $this->options['fontSize'] * 1.5
+          ) {
+            $gridText .= '<text text-anchor="end" x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
+            $gridLines .= ' M0,'.$labelHeight.' '.$this->width.','.$labelHeight;
+          } else if ( // label is too close
+            $labelHeight < $this->height - $this->options['fontSize'] * 0.75 &&
+            $labelHeight > $this->options['fontSize'] * 0.75
+          ) {
+            $gridLines .= ' M'.( // move grid line over when it's very close to the min or max label
+              $labelHeight < $this->height - $this->options['fontSize'] / 2 && $labelHeight > $this->options['fontSize'] / 2 ? 0 : $this->options['fontSize'] / 2
+            ).','.$labelHeight.' '.$this->width.','.$labelHeight;
+          }
+        }
+      } else {
+        $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
+      }
 
       $chartPoints = 'M';
       $chartSplines = 'M'.
@@ -124,39 +161,6 @@ namespace NeatCharts {
             $this->transformX($x).','.
             $this->transformY($y) . ' ';
         }
-      }
-
-      // Top and bottom grid lines
-      $gridLines =
-        'M10,0 '.$this->width.',0 '.
-        ' M10,'.$this->height.','.$this->width.','.$this->height;
-
-      // Top and bottom grid labels
-      $gridText =
-        '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
-        '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
-
-      // Main labels and grid lines
-      for (
-        $labelY = $this->yMin - fmod($this->yMin, $labelInterval) + $labelInterval; // Start at the first "nice" Y value > min
-        $labelY < $this->yMax; // Keep going until max
-        $labelY += $labelInterval // Add Interval each iteration
-      ) {
-        $labelHeight = $this->transformY($labelY);
-        if ( // label is not too close to the min or max
-          $labelHeight < $this->height - 1.5 * $this->options['fontSize'] &&
-          $labelHeight > $this->options['fontSize'] * 1.5
-        ) {
-          $gridText .= '<text text-anchor="end" x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
-          $gridLines .= ' M0,'.$labelHeight.' '.$this->width.','.$labelHeight;
-        } else if ( // label is too close
-            $labelHeight < $this->height - $this->options['fontSize'] * 0.75 &&
-            $labelHeight > $this->options['fontSize'] * 0.75
-          ) {
-            $gridLines .= ' M'.( // move grid line over when it's very close to the min or max label
-              $labelHeight < $this->height - $this->options['fontSize'] / 2 && $labelHeight > $this->options['fontSize'] / 2 ? 0 : $this->options['fontSize'] / 2
-            ).','.$labelHeight.' '.$this->width.','.$labelHeight;
-          }
       }
 
       $chartID = rand();

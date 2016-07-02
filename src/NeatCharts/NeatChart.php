@@ -7,7 +7,9 @@ namespace NeatCharts {
       'lineColor' => '#000',
       'labelColor' => '#000',
       'smoothed' => false,
-      'fontSize' => 15
+      'fontSize' => 15,
+      'yAxisEnabled'=>true,
+      'xAxisEnabled'=>false
     ];
 
     protected $width;
@@ -66,8 +68,8 @@ namespace NeatCharts {
     }
 
     public abstract function setData($chartData);
-    public function render($inline = false) {
-      return ($inline ? '' : '<?xml version="1.0" standalone="no"?>') . $this->output;
+    public function render() {
+      return $this->output;
     }
   }
 }
