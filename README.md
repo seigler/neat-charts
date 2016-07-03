@@ -63,6 +63,20 @@ print $chart->render();
 In your HTML:
 `<img src="path to the PHP file">`
 
+## Available Options
+
+| Option | Default |
+| --- | --- |
+| width | 800 |
+| height | 250 |
+| lineColor | '#000' |
+| markerColor | '#000' |
+| labelColor | '#000' |
+| smoothed | false |
+| fontSize | 15 |
+| yAxisEnabled | true |
+| xAxisEnabled | false |
+
 ## Credits
 
 * Chart appearance based on advice found at http://vis4.net/blog/posts/doing-the-line-charts-right/
