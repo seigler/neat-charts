@@ -167,7 +167,7 @@ namespace NeatCharts {
       $this->output = '<svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
       <marker id="SVGChart-markerCircle-'.( $chartID ).'" markerWidth="2" markerHeight="2" refX="1" refY="1" markerUnits="strokeWidth">
-        <circle cx="1" cy="1" r="1" style="stroke: none; fill:'.( $this->options['lineColor'] ).';" />
+        <circle cx="1" cy="1" r="1" style="stroke: none; fill:'.( $this->options['markerColor'] ).';" />
       </marker>
       <linearGradient id="SVGChart-fadeFromNothing-'.( $chartID ).'" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0.5%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="0"></stop>

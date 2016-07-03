@@ -5,6 +5,7 @@ namespace NeatCharts {
       'width' => 800,
       'height' => 250,
       'lineColor' => '#000',
+      'markerColor' => '#000',
       'labelColor' => '#000',
       'smoothed' => false,
       'fontSize' => 15,
