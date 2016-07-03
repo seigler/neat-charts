@@ -65,5 +65,4 @@ In your HTML:
 
 ## Credits
 
-* Demo output caching based on http://www.the-art-of-web.com/php/buffer/
 * Chart appearance based on advice found at http://vis4.net/blog/posts/doing-the-line-charts-right/
