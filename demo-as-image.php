@@ -12,7 +12,6 @@ for ($n = 0, $current = $offset + 0.5 * $scale; $n < 24; $n++) {
   $chartData[$n] = $current;
 }
 
-header('Content-type: image/svg+xml; charset=utf-8');
 $chart = new NeatCharts\LineChart($chartData, [
   'width'=>500,
   'height'=>400,
@@ -21,5 +20,8 @@ $chart = new NeatCharts\LineChart($chartData, [
   'smoothed'=>false,
   'fontSize'=>14
 ]);
+
+header('Content-type: image/svg+xml; charset=utf-8');
+echo '<?xml version="1.0" standalone="no"?>' . PHP_EOL;
 echo $chart->render();
 ?>

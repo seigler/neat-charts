@@ -175,7 +175,7 @@ namespace NeatCharts {
         <stop offset="100%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
       </linearGradient>
     </defs>
-    <g class="SVGChart">
+    <g class="SVGChart">'.( $this->options['yAxisEnabled'] || $this->options['xAxisEnabled'] ? '
       <g class="chart__gridLines"
         shape-rendering="crispEdges"
         fill="none"
@@ -192,7 +192,7 @@ namespace NeatCharts {
         font-size="'.( $this->options['fontSize'] ).'px"
       >
         '.( $gridText ).'
-      </g>
+      </g>' : '').'
       <g class="chart__plotLine"
         fill="none"
         stroke-width="'.( $this->options['fontSize'] / 3 ).'"
