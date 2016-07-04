@@ -10,7 +10,8 @@ namespace NeatCharts {
       'smoothed' => false,
       'fontSize' => 15,
       'yAxisEnabled'=>true,
-      'xAxisEnabled'=>false
+      'xAxisEnabled'=>false,
+      'yAxisZero'=>false
     ];
 
     protected $width;
@@ -23,11 +24,6 @@ namespace NeatCharts {
     protected $yMax;
     protected $yRange;
     protected $padding = ['top'=>10, 'right'=>10, 'bottom'=>10, 'left'=>10];
-
-    protected function arrayGet($array, $key, $default = NULL)
-    {
-        return isset($array[$key]) ? $array[$key] : $default;
-    }
 
     protected function labelFormat($float, $places, $minPlaces = 0) {
       $value = number_format($float, max($minPlaces, $places));
@@ -57,7 +53,29 @@ namespace NeatCharts {
       return $precision;
     }
 
-    public function __construct($chartData, $options = []) {
+    protected function setWindow($chartData) {
+      end($chartData);
+      $this->xMax = key($chartData);
+      reset($chartData);
+      $this->xMin = key($chartData);
+      $this->xRange = $this->xMax - $this->xMin;
+      $this->yMin = ($this->options['yAxisZero'] ? 0 : INF);
+      $this->yMax = -INF;
+
+      foreach ($chartData as $x => $y) {
+        if ($y < $this->yMin) {
+          $this->yMin = $y;
+          $yMinX = $x;
+        }
+        if ($y > $this->yMax) {
+          $this->yMax = $y;
+          $yMaxX = $x;
+        }
+      }
+      $this->yRange = $this->yMax - $this->yMin;
+    }
+
+    final public function __construct($chartData, $options = []) {
       $this->setOptions($options);
       $this->setData($chartData);
     }

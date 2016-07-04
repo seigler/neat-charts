@@ -1,31 +1,33 @@
 <?php
 namespace NeatCharts {
   class LineChart extends NeatChart {
+    public function setOptions($options) {
+      $this->options = [ // LineChart defaults
+        'width' => 800,
+        'height' => 250,
+        'lineColor' => '#000',
+        'markerColor' => '#000',
+        'labelColor' => '#000',
+        'smoothed' => false,
+        'fontSize' => 15,
+        'yAxisEnabled'=>true,
+        'xAxisEnabled'=>false,
+        'yAxisZero'=>false
+      ];
+      parent::setOptions($options);
+    }
+
     public function setData($chartData) {
+      $this->setWindow($chartData, $this->options); // sets min, max, range, etc
       // we assume $chartData is sorted by key and keys and values are all numeric
       $previousX = $previousY = null;
-      end($chartData);
-      $this->xMax = key($chartData);
-      reset($chartData);
-      $this->xMin = key($chartData);
-      $this->xRange = $this->xMax - $this->xMin;
       $count = count($chartData);
       $deltaX = $this->xRange / $count;
-      $this->yMin = INF; // so the first comparison sets this to an actual value
-      $this->yMax = -INF;
       $averageAbsSlope = 0; // we will add all of them then divide to get an average
       $secants = []; // slope between this point and the previous one
       $tangents = []; // slope across the point
 
       foreach ($chartData as $x => $y) {
-        if ($y < $this->yMin) {
-          $this->yMin = $y;
-          $yMinX = $x;
-        }
-        if ($y > $this->yMax) {
-          $this->yMax = $y;
-          $yMaxX = $x;
-        }
         if (!is_null($previousY)) {
           $averageAbsSlope += abs($y - $previousY); // just add up all the Y differences
           $secants[$previousX] = ($y - $previousY) / $deltaX;
@@ -36,7 +38,6 @@ namespace NeatCharts {
         $previousY = $y;
         $previousX = $x;
       }
-      $this->yRange = $this->yMax - $this->yMin;
       $averageAbsSlope /= $this->yRange * $deltaX; // turn this absolute-deltas total into a slope
 
       if ($this->options['smoothed']) {
@@ -140,15 +141,13 @@ namespace NeatCharts {
       }
 
       $chartPoints = 'M';
-      $chartSplines = 'M'.
-        $this->transformX($this->xMin).','.
-        $this->transformY($chartData[$this->xMin]);
       if ($this->options['smoothed']) {
+        $chartPoints .= $this->transformX($this->xMin).','.$this->transformY($chartData[$this->xMin]);
         foreach ($chartData as $x => $y) {
           $controlX = $deltaX / 3 / sqrt(1 + $tangents[$x]**2);
           $controlY = $tangents[$x] * $controlX;
           if ($x != $this->xMin) {
-            $chartSplines .= ' S'.
+            $chartPoints .= ' S'.
               $this->transformX($x - $controlX).','.
               $this->transformY($y - $controlY).' '.
               $this->transformX($x).','.
@@ -166,31 +165,29 @@ namespace NeatCharts {
       $chartID = rand();
       $this->output = '<svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs>
-      <marker id="SVGChart-markerCircle-'.( $chartID ).'" markerWidth="2" markerHeight="2" refX="1" refY="1" markerUnits="strokeWidth">
-        <circle cx="1" cy="1" r="1" style="stroke: none; fill:'.( $this->options['markerColor'] ).';" />
+      <marker id="neatchart-markerCircle-'.( $chartID ).'" markerWidth="2" markerHeight="2" refX="1" refY="1" markerUnits="strokeWidth">
+        <circle class="neatchart-marker" cx="1" cy="1" r="1" stroke="none" fill="'.( $this->options['markerColor'] ).'" />
       </marker>
-      <linearGradient id="SVGChart-fadeFromNothing-'.( $chartID ).'" x1="0%" y1="0%" x2="100%" y2="0%">
+      <linearGradient id="neatchart-fadeFromNothing-'.( $chartID ).'" x1="0%" y1="0%" x2="100%" y2="0%" gradientUnits="userSpaceOnUse">
         <stop offset="0.5%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="0"></stop>
-        <stop offset="5%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
+        <stop offset="2%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
         <stop offset="100%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
       </linearGradient>
     </defs>
-    <g class="SVGChart">'.( $this->options['yAxisEnabled'] || $this->options['xAxisEnabled'] ? '
+    <g class="neatchart">'.( $this->options['yAxisEnabled'] || $this->options['xAxisEnabled'] ? '
       <g class="chart__gridLines"
-        shape-rendering="crispEdges"
         fill="none"
         stroke="'.( $this->options['labelColor'] ).'"
-        stroke-opacity="0.75"
         stroke-width="1"
+        vector-effect="non-scaling-stroke"
         stroke-dasharray="2, 2"
-      >
+        shape-rendering="crispEdges">
         <path class="chart__gridLinePaths" d="'.( $gridLines ).'" />
       </g>
       <g class="chart__gridLabels"
         fill="'.( $this->options['labelColor'] ).'"
         font-family="monospace"
-        font-size="'.( $this->options['fontSize'] ).'px"
-      >
+        font-size="'.( $this->options['fontSize'] ).'px">
         '.( $gridText ).'
       </g>' : '').'
       <g class="chart__plotLine"
@@ -198,10 +195,16 @@ namespace NeatCharts {
         stroke-width="'.( $this->options['fontSize'] / 3 ).'"
         stroke-linejoin="round"
         stroke-linecap="round"
-        stroke="url(#SVGChart-fadeFromNothing-'.( $chartID ).')"
-        marker-end="url(#SVGChart-markerCircle-'.( $chartID ).')"
+        stroke="url(#neatchart-fadeFromNothing-'.( $chartID ).')"
+        marker-end="url(#neatchart-markerCircle-'.( $chartID ).')"
       >
-        <path d="'.( $this->options['smoothed'] ? $chartSplines : $chartPoints ).'" />
+        <path d="'.( $chartPoints ).'" />'.($this->options['yAxisZero'] ? '
+        <path
+          stroke="none"
+          fill="url(#neatchart-fadeFromNothing-'.( $chartID ).')"
+          fill-opacity="0.25"
+          marker-end="none"
+          d="'.$chartPoints.' L'.$this->width.','.$this->height.' 0,'.$this->height.' Z'.'" />' : '').'
       </g>
     </g>
   </svg>';
