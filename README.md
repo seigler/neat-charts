@@ -2,7 +2,7 @@
 
 PHP project to generate clean-looking SVG price charts
 
-![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/charts/dark/dash-btc/7d/svg)  
+![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/charts/dark/dash-btc/30d/svg?lineColor=1C74BC)  
 7d of Dash price in Bitcoin from Poloniex.com
 
 ## Requirements
@@ -38,7 +38,7 @@ You are now ready to use NeatCharts.
 
 ### Install NeatCharts manually
 
-Just download the folder `NeatCharts` (in `src`) and place it alongside your php file. Add the following at the top of your PHP file:
+Download the folder `NeatCharts` (in `src`) and place it alongside your php file. Add the following at the top of your PHP file:
 
 ```php
 spl_autoload_extensions(".php");
@@ -57,6 +57,7 @@ $chart = new NeatCharts/LineChart($chartData, [ // all parameters optional
   'labelColor'=>"#777",
   'smoothed'=>false
 ]);
+print '<?xml version="1.0" standalone="no"?>';
 print $chart->render();
 ```
 
