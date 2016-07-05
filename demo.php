@@ -1,11 +1,11 @@
 <?php
 require_once 'vendor/autoload.php';
 
-function randomData($count = 96) {
+function randomData($count = 96, $offsetMax = 100) {
   $randomData = [];
-  $offset = 100 * (rand()/getRandMax())**2;
-  $scale = max(0.1 * $offset, 100 * rand() / getRandMax());
-  $volatility = 0.25 * (rand()/getRandMax())**3 + 0.25;
+  $offset = $offsetMax * (rand()/getRandMax())**2;
+  $scale = max(0.25 * $offset, 100 * rand() / getRandMax());
+  $volatility = 0.5 * (rand()/getRandMax())**3 + 0.25;
   for ($n = 0, $current = $offset + 0.5 * $scale; $n < $count; $n++) {
     $current -= $offset;
     $current *= 1 + $volatility * (rand()/getRandMax() - 0.5);
@@ -39,9 +39,9 @@ function randomData($count = 96) {
       </figure>
     </section>
     <section>
-      <h2>Chart in <code>svg</code> tag, zero axis shown</h2>
+      <h2>Chart in <code>svg</code> tag, zero axis shown, filled</h2>
       <figure>
-        <?php
+<?php
 $chart = new NeatCharts\LineChart(randomData(), [
   'width'=>800,
   'height'=>250,
@@ -49,7 +49,8 @@ $chart = new NeatCharts\LineChart(randomData(), [
   'labelColor'=>'#222',
   'smoothed'=>false,
   'fontSize'=>14,
-  'yAxisZero'=>true
+  'yAxisZero'=>true,
+  'filled'=>true
 ]);
 echo $chart->render();
 ?>
@@ -59,10 +60,10 @@ echo $chart->render();
     <section>
       <h2>Smoothed chart in <code>svg</code> tag</h2>
       <figure>
-        <?php
+<?php
 $chart = new NeatCharts\LineChart(randomData(12), [
-  'width'=>300,
-  'height'=>300,
+  'width'=>400,
+  'height'=>300, // null works as a height too, it picks a height that makes the plot look good
   'lineColor'=>'#080',
   'labelColor'=>'#222',
   'smoothed'=>true,
@@ -88,6 +89,18 @@ $chart = new NeatCharts\LineChart(randomData(48), [
   'xAxisEnabled'=>false
 ]);
 echo $chart->render();
+?>
+        <figcaption>Random generated data, loaded right in the page</figcaption>
+      </figure>
+    </section>
+    <section>
+      <h2>Bar chart in <code>svg</code> tag</h2>
+      <figure>
+<?php
+        $chart = new NeatCharts\BarChart(randomData(10, 0), [
+          'barColor'=>'#409'
+        ]);
+        echo $chart->render();
 ?>
         <figcaption>Random generated data, loaded right in the page</figcaption>
       </figure>

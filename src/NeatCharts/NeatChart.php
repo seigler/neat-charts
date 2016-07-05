@@ -91,20 +91,20 @@ namespace NeatCharts {
         $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
         $labelPrecision = $this->getPrecision($labelInterval);
 
-        $this->padding['left'] = $this->options['fontSize'] * 0.6 * (
-          1 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
-        ) + 10;
+        $this->padding['left'] = $this->options['fontSize'] * 0.65 * (
+          2.5 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
+        );
         $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
 
         // Top and bottom grid lines
         $gridLines =
-          'M10,0 '.$this->width.',0 '.
-          ' M10,'.$this->height.','.$this->width.','.$this->height;
+          'M0,0 '.$this->width.',0 '.
+          ' M0,'.$this->height.','.$this->width.','.$this->height;
 
         // Top and bottom grid labels
         $gridText =
-          '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
-          '<text text-anchor="end" x="'.(0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
+          '<text text-anchor="end" x="'.(-0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
+          '<text text-anchor="end" x="'.(-0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
 
         // Main labels and grid lines
         for (
@@ -117,8 +117,8 @@ namespace NeatCharts {
             $labelHeight < $this->height - 1.5 * $this->options['fontSize'] &&
             $labelHeight > $this->options['fontSize'] * 1.5
           ) {
-            $gridText .= '<text text-anchor="end" x="-'.(0.25 * $this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
-            $gridLines .= ' M0,'.$labelHeight.' '.$this->width.','.$labelHeight;
+            $gridText .= '<text text-anchor="end" x="-'.($this->options['fontSize']).'" y="'.($labelHeight + $this->options['fontSize'] * 0.4).'">'.$this->labelFormat($labelY, $labelPrecision).'</text>';
+            $gridLines .= ' M-'.($this->options['fontSize'] * 0.65).','.$labelHeight.' '.$this->width.','.$labelHeight;
           } else if ( // label is too close
             $labelHeight < $this->height - $this->options['fontSize'] * 0.75 &&
             $labelHeight > $this->options['fontSize'] * 0.75
@@ -133,9 +133,9 @@ namespace NeatCharts {
         <g class="chart__gridLines"
           fill="none"
           stroke="'.( $this->options['labelColor'] ).'"
+          stroke-opacity="0.4"
           stroke-width="1"
           vector-effect="non-scaling-stroke"
-          stroke-dasharray="2, 2"
           shape-rendering="crispEdges">
           <path class="chart__gridLinePaths" d="'.( $gridLines ).'" />
         </g>

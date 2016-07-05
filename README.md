@@ -3,7 +3,11 @@
 PHP project to generate clean-looking SVG price charts
 
 ![Dash 24h price in BTC from Poloniex](http://cryptohistory.org/charts/dark/dash-btc/30d/svg?lineColor=1C74BC)  
-7d of Dash price in Bitcoin from Poloniex.com
+30 days of Dash price in Bitcoin from Poloniex.com
+
+Ethereum 7-day price in BTC from Poloniex ![Ethereum 7d price in BTC from Poloniex](http://cryptohistory.org/charts/sparkline/eth-btc/7d/svg)
+
+More examples at [cryptohistory.org](http://cryptohistory.org/).
 
 ## Requirements
 
@@ -66,6 +70,7 @@ In your HTML:
 
 ## Available Options
 
+### LineChart
 | Option | Default |
 | --- | --- |
 | width | 800 |
@@ -77,6 +82,21 @@ In your HTML:
 | fontSize | 15 |
 | yAxisEnabled | true |
 | xAxisEnabled | false |
+| yAxisZero | false |
+| filled | false |
+
+### BarChart
+| Option | Default |
+| --- | --- |
+| width | 600 |
+| height | 300 |
+| barColor | '#000' |
+| markerColor | '#000' |
+| labelColor | '#000' |
+| fontSize | 15 |
+| yAxisEnabled | true |
+| xAxisEnabled | false |
+| yAxisZero | true |
 
 ## Credits
 

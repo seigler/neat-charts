@@ -12,7 +12,8 @@ namespace NeatCharts {
         'fontSize' => 15,
         'yAxisEnabled'=>true,
         'xAxisEnabled'=>false,
-        'yAxisZero'=>false
+        'yAxisZero'=>false,
+        'filled'=>false
       ];
       parent::setOptions($options);
     }
@@ -128,7 +129,7 @@ namespace NeatCharts {
         stroke="url(#neatchart-fadeFromNothing-'.( $chartID ).')"
         marker-end="url(#neatchart-markerCircle-'.( $chartID ).')"
       >
-        <path d="'.( $chartPoints ).'" />'.($this->options['yAxisZero'] ? '
+        <path d="'.( $chartPoints ).'" />'.($this->options['filled'] ? '
         <path
           stroke="none"
           fill="url(#neatchart-fadeFromNothing-'.( $chartID ).')"
