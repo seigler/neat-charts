@@ -20,15 +20,9 @@ To install using Composer, you will have to install Composer first.
 
 `curl -s https://getcomposer.org/installer | php`
 
-Create a composer.json file in your project root.
+Create a composer.json file in your project root. Then run this command in your project folder:
 
-```json
-{
-  "require": {
-    "seigler/neat-charts": "@dev"
-  }
-}
-```
+`composer require seigler/neat-charts`
 
 Tell Composer to install the required dependencies.
 
