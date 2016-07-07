@@ -48,7 +48,7 @@ namespace NeatCharts {
         fill-opacity="0.5"
         stroke="'.( $this->options['barColor'] ).'"
         stroke-width="2"
-        stroke-linecap="round"
+        stroke-linecap="square"
         >
         <path d="'.( $chartPoints ).'" />
       </g>

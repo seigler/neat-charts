@@ -75,7 +75,7 @@ namespace NeatCharts {
         class="chart__bars"
         stroke="'.( $this->options['barColor'] ).'"
         stroke-width="1"
-        stroke-linecap="round"
+        stroke-linecap="square"
         >
         <g
           class="chart__whiskers"
