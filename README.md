@@ -62,6 +62,8 @@ print $chart->render();
 In your HTML:
 `<img src="path to the PHP file">`
 
+There are more demos available in `demo.php` and `demo-as-image.php`.
+
 ## Available Options
 
 ### LineChart
@@ -91,6 +93,21 @@ In your HTML:
 | yAxisEnabled | true |
 | xAxisEnabled | false |
 | yAxisZero | true |
+
+### CandlestickChart
+| Option | Default |
+| --- | --- |
+| width | 1200 |
+| height | 300 |
+| barColor | '#000' |
+| risingFillColor | '#0D0' |
+| fallingFillColor | '#D00' |
+| markerColor | '#000' |
+| labelColor | '#000' |
+| fontSize | 15 |
+| yAxisEnabled | true |
+| xAxisEnabled | false |
+| yAxisZero | false |
 
 ## Credits
 
