@@ -6,8 +6,8 @@ namespace NeatCharts {
         'width' => 1200,
         'height' => 300,
         'barColor' => '#000',
-        'risingFillColor' => '#0D0',
-        'fallingFillColor' => '#D00',
+        'risingColor' => '#0D0',
+        'fallingColor' => '#D00',
         'markerColor' => '#000',
         'labelColor' => '#000',
         'fontSize' => 15,
@@ -86,13 +86,13 @@ namespace NeatCharts {
         </g>
         <g
           class="chart__rising-bars"
-          fill="'.( $this->options['risingFillColor'] ).'"
+          fill="'.( $this->options['risingColor'] ).'"
         >
           <path d="'.( $risingPoints ).'" />
         </g>
         <g
           class="chart__falling-bars"
-          fill="'.( $this->options['fallingFillColor'] ).'"
+          fill="'.( $this->options['fallingColor'] ).'"
         >
           <path d="'.( $fallingPoints ).'" />
         </g>
