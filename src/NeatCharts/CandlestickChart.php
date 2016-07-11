@@ -6,7 +6,7 @@ namespace NeatCharts {
         'width' => 1200,
         'height' => 300,
         'barColor' => '#000',
-        'risingColor' => '#0D0',
+        'risingColor' => '#0B0',
         'fallingColor' => '#D00',
         'markerColor' => '#000',
         'labelColor' => '#000',
@@ -61,10 +61,12 @@ namespace NeatCharts {
         $whiskerY1 = $this->transformY($v->high);
         if ($v->close > $v->open) {
           $whiskerPoints .= ' M'.($barX).','.($whiskerY0).' '.($barX).','.($whiskerY1);
-          $risingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
+//          $risingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
+          $risingPoints .= ' M'.$barX.','.$barY0.' '.$barX.','.$barY1;
         } else {
           $whiskerPoints .= ' M'.($barX).','.($whiskerY1).' '.($barX).','.($whiskerY0);
-          $fallingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
+//          $fallingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
+          $fallingPoints .= ' M'.$barX.','.$barY0.' '.$barX.','.$barY1;
         }
       }
 
@@ -75,24 +77,26 @@ namespace NeatCharts {
         class="chart__bars"
         stroke="'.( $this->options['barColor'] ).'"
         stroke-width="1"
-        stroke-linecap="square"
+        stroke-linecap="butt"
         >
         <g
           class="chart__whiskers"
-          stroke-width="1"
-          stroke-linecap="butt"
+          stroke-width="'.( $barRadius ).'"
+          stroke-opacity="0.25"
         >
           <path d="'.( $whiskerPoints ).'" />
         </g>
         <g
           class="chart__rising-bars"
-          fill="'.( $this->options['risingColor'] ).'"
+          stroke="'.( $this->options['risingColor'] ).'"
+          stroke-width="'.( $barRadius * 2 ).'"
         >
           <path d="'.( $risingPoints ).'" />
         </g>
         <g
           class="chart__falling-bars"
-          fill="'.( $this->options['fallingColor'] ).'"
+          stroke="'.( $this->options['fallingColor'] ).'"
+          stroke-width="'.( $barRadius * 2 ).'"
         >
           <path d="'.( $fallingPoints ).'" />
         </g>
