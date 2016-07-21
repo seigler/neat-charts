@@ -62,11 +62,11 @@ namespace NeatCharts {
         if ($v->close > $v->open) {
           $whiskerPoints .= ' M'.($barX).','.($whiskerY0).' '.($barX).','.($whiskerY1);
 //          $risingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
-          $risingPoints .= ' M'.$barX.','.$barY0.' '.$barX.','.$barY1;
+          $risingPoints .= ' M'.$barX.','.($barY0 - 0.5).' '.$barX.','.($barY1 + 0.5);
         } else {
           $whiskerPoints .= ' M'.($barX).','.($whiskerY1).' '.($barX).','.($whiskerY0);
 //          $fallingPoints .= ' M'.($barX - $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY0.' '.($barX + $barRadius).','.$barY1.' '.($barX - $barRadius).','.$barY1.' Z';
-          $fallingPoints .= ' M'.$barX.','.$barY0.' '.$barX.','.$barY1;
+          $fallingPoints .= ' M'.$barX.','.($barY0 + 0.5).' '.$barX.','.($barY1 - 0.5);
         }
       }
 
