@@ -10,10 +10,11 @@ namespace NeatCharts {
         'labelColor' => '#000',
         'smoothed' => false,
         'fontSize' => 15,
-        'yAxisEnabled'=>true,
-        'xAxisEnabled'=>false,
-        'yAxisZero'=>false,
-        'filled'=>false
+        'yAxisEnabled' => true,
+        'xAxisEnabled' => false,
+        'yAxisZero' => false,
+        'filled' => false,
+        'background' => 'none'
       ];
       parent::setOptions($options);
     }

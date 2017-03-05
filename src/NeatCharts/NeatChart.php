@@ -9,9 +9,10 @@ namespace NeatCharts {
       'labelColor' => '#000',
       'smoothed' => false,
       'fontSize' => 15,
-      'yAxisEnabled'=>true,
-      'xAxisEnabled'=>false,
-      'yAxisZero'=>false
+      'yAxisEnabled' => true,
+      'xAxisEnabled' => true,
+      'yAxisZero' => false,
+      'background' => 'none'
     ];
 
     protected $width;
@@ -24,6 +25,7 @@ namespace NeatCharts {
     protected $yMax;
     protected $yRange;
     protected $padding = ['top'=>10, 'right'=>10, 'bottom'=>10, 'left'=>10];
+    protected $timeIntervals = [ 5 * 60, 60 * 60, 24 * 60 * 60, 28 * 60 * 60 ]; // 5 min, 1 hr, 24 hr, 1 month
 
     protected function labelFormat($float, $places, $minPlaces = 0) {
       $value = number_format($float, max($minPlaces, $places));
@@ -31,7 +33,6 @@ namespace NeatCharts {
       return (strpos($value, '.') === false ? $value . '.' : $value);
     }
 
-    /* Transform data coords to chart coords */
     /* Transform data coords to chart coords */
     protected function transformX($x) {
       return round(
@@ -49,7 +50,7 @@ namespace NeatCharts {
       if (!is_numeric($value)) { return false; }
       $decimal = $value - floor($value); //get the decimal portion of the number
       if ($decimal == 0) { return 0; } //if it's a whole number
-      $precision = strlen(trim(number_format($decimal,10),'0')) - 1; //-2 to account for '0.'
+      $precision = strlen(trim(number_format($decimal,10),'0')) - 1; //-1 to account for '0.'
       return $precision;
     }
 
@@ -78,21 +79,23 @@ namespace NeatCharts {
     protected function buildGridLabelXML() {
       $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
       $this->height = $this->options['height'] - $this->padding['top'] - $this->padding['bottom'];
-      if ($this->options['yAxisEnabled'] || $this->options['xAxisEnabled']) {
-        $numLabels = 2 + ceil($this->height / $this->options['fontSize'] / 6);
+      if ($this->options['yAxisEnabled']) {
+        $numLabels = 4 + ceil($this->height / $this->options['fontSize'] / 4);
         $labelInterval = $this->yRange / $numLabels;
         $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
-        // 0.1 here is a fudge factor so we get multiples of 2.5 a little more often
-        if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 0.1) {
+        // 1 here is a fudge factor so we get multiples of 2.5 more often
+        if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 1) {
           $labelModulation /= 2.5;
         } else {
           $labelModulation /= 2;
         }
         $labelInterval = ceil($labelInterval * $labelModulation) / $labelModulation;
         $labelPrecision = $this->getPrecision($labelInterval);
+        $digitsLeft = max(1, ceil(log($this->yMax, 10)));
+        $commas = max(0, floor(($digitsLeft - 1) / 3));
 
         $this->padding['left'] = $this->options['fontSize'] * 0.65 * (
-          2.5 + max(1, ceil(log($this->yMax, 10))) + $this->getPrecision($labelInterval)
+          2.5 + $digitsLeft + $commas + $this->getPrecision($labelInterval)
         );
         $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
 
@@ -130,8 +133,14 @@ namespace NeatCharts {
         }
 
         return '
+        <rect class="chart__background"
+          fill="'.( $this->options['background'] ).'"
+          x="-'.( $this->padding['left'] ).'"
+          y="-'.( $this->padding['top'] ).'"
+          width="'.( $this->options['width'] ).'"
+          height="'.( $this->options['height'] ).'"
+        />
         <g class="chart__gridLines"
-          fill="none"
           stroke="'.( $this->options['labelColor'] ).'"
           stroke-opacity="0.4"
           stroke-width="1"

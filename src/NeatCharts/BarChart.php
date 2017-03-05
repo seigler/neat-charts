@@ -9,9 +9,10 @@ namespace NeatCharts {
         'markerColor' => '#000',
         'labelColor' => '#000',
         'fontSize' => 15,
-        'yAxisEnabled'=>true,
-        'xAxisEnabled'=>false,
-        'yAxisZero'=>true
+        'yAxisEnabled' => true,
+        'xAxisEnabled' => false,
+        'yAxisZero' => true,
+        'background' => 'none'
       ];
       parent::setOptions($options);
     }

@@ -1,8 +1,10 @@
 <?php
 require_once 'vendor/autoload.php';
 
-function randomData($count = 96, $offsetMax = 100) {
+function randomData($count = 96, $offsetMax = 2000) {
   $randomData = [];
+  $duration = 60 * 5 + rand() * 60 * 60 * 24;
+  $begin = time() - $duration;
   $offset = $offsetMax * (rand()/getRandMax())**2;
   $scale = max(0.25 * $offset, 100 * rand() / getRandMax());
   $volatility = 0.5 * (rand()/getRandMax())**3 + 0.25;
@@ -10,7 +12,7 @@ function randomData($count = 96, $offsetMax = 100) {
     $current -= $offset;
     $current *= 1 + $volatility * (rand()/getRandMax() - 0.5);
     $current += $offset;
-    $randomData[$n] = $current;
+    $randomData[$begin + $duration / $count * $n] = $current;
   }
   return $randomData;
 }
@@ -39,7 +41,7 @@ function randomData($count = 96, $offsetMax = 100) {
       </figure>
     </section>
     <section>
-      <h2>Line chart in <code>svg</code> tag, zero axis shown, filled</h2>
+      <h2>Line chart in <code>svg</code> tag, zero axis shown, filled, smoothed</h2>
       <figure>
 <?php
 $chart = new NeatCharts\LineChart(randomData(), [
@@ -47,7 +49,7 @@ $chart = new NeatCharts\LineChart(randomData(), [
   'height'=>250,
   'lineColor'=>'#F00',
   'labelColor'=>'#222',
-  'smoothed'=>false,
+  'smoothed'=>true,
   'fontSize'=>14,
   'yAxisZero'=>true,
   'filled'=>true
