@@ -85,7 +85,7 @@ namespace NeatCharts {
           </feMerge>
         </filter>
       </defs>').'
-      <g class="neatchart"'.( $this->options['shadow'] == 'none' ? '' : 'filter="url(#shadow)"').'>'.
+      <g class="neatchart"'.( $this->options['shadow'] == 'none' ? '' : ' filter="url(#shadow)"').'>'.
       $gridLabelXML.'
       <g
         class="chart__bars"
