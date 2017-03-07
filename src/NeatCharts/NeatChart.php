@@ -137,7 +137,7 @@ namespace NeatCharts {
       if ($this->options['xAxisEnabled']) {
         $timeIntervals = [
           'minutes' => [60, 'g:ia'],
-          'hours' => [60 * 60, 'ga'],
+          'hours' => [60 * 60, 'D ga'],
           'days' => [24 * 60 * 60, 'M j'],
           'years' => [365 * 24 * 60 * 60, 'Y']
         ];
