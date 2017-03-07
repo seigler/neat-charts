@@ -78,7 +78,7 @@ namespace NeatCharts {
           <feFlood result="flood" flood-color="'.$this->options['shadow'].'" flood-opacity="0.75"></feFlood>
           <feComposite in="flood" result="mask" in2="SourceAlpha" operator="in"></feComposite>
           <feMorphology in="mask" result="dilated" operator="dilate" radius="2"></feMorphology>
-          <feGaussianBlur in="dilated" result="blurred" stdDeviation="6"></feGaussianBlur>
+          <feGaussianBlur in="dilated" result="blurred" stdDeviation="4"></feGaussianBlur>
           <feMerge>
             <feMergeNode in="blurred"></feMergeNode>
             <feMergeNode in="SourceGraphic"></feMergeNode>

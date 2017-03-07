@@ -14,7 +14,8 @@ namespace NeatCharts {
         'xAxisEnabled' => true,
         'yAxisZero' => false,
         'filled' => false,
-        'background' => 'none'
+        'background' => 'none',
+        'shadow' => 'none'
       ];
       parent::setOptions($options);
     }
@@ -119,9 +120,19 @@ namespace NeatCharts {
         <stop offset="0.5%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="0"></stop>
         <stop offset="2%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
         <stop offset="100%" stop-color="'.( $this->options['lineColor'] ).'" stop-opacity="1"></stop>
-      </linearGradient>
+      </linearGradient>'.( $this->options['shadow'] == 'none' ? '' : '
+      <filter id="shadow" x="-5000%" y="-5000%" width="10000%" height="10000%">
+        <feFlood result="flood" flood-color="'.$this->options['shadow'].'" flood-opacity="0.75"></feFlood>
+        <feComposite in="flood" result="mask" in2="SourceAlpha" operator="in"></feComposite>
+        <feMorphology in="mask" result="dilated" operator="dilate" radius="2"></feMorphology>
+        <feGaussianBlur in="dilated" result="blurred" stdDeviation="4"></feGaussianBlur>
+        <feMerge>
+          <feMergeNode in="blurred"></feMergeNode>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+        </feMerge>
+      </filter>').'
     </defs>
-    <g class="neatchart">'.( $this->options['yAxisEnabled'] || $this->options['xAxisEnabled'] ? $gridLabelsXML : '').'
+    <g class="neatchart"'.( $this->options['shadow'] == 'none' ? '' : ' filter="url(#shadow)"').'>'.( $this->options['yAxisEnabled'] || $this->options['xAxisEnabled'] ? $gridLabelsXML : '').'
       <g class="chart__plotLine"
         fill="none"
         stroke-width="'.( $this->options['fontSize'] / 3 ).'"
