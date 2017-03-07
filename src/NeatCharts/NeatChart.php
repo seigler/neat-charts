@@ -141,7 +141,7 @@ namespace NeatCharts {
           'days' => [24 * 60 * 60, 'M j'],
           'years' => [365 * 24 * 60 * 60, 'Y']
         ];
-        $numXLabels = 1 + round($this->width / $this->options['fontSize'] / 10);
+        $numXLabels = round($this->width / $this->options['fontSize'] / 12);
         $scale = 'years';
         $xLabelFormat = $timeIntervals[$scale][1];
         foreach ($timeIntervals as $period => $duration) {
@@ -161,7 +161,15 @@ namespace NeatCharts {
           $labelXCoord = $this->transformX($labelX);
           $gridLines .= 'M'.$labelXCoord.' 0 '.$labelXCoord.' '.$this->height.' ';
           $xLabelAlignment = ($this->width - $labelXCoord > $this->options['fontSize'] * 2 ? ($labelXCoord > $this->options['fontSize'] * 2 ? 'middle' : 'start') : 'end');
-          $gridText .= '<text text-anchor="'.$xLabelAlignment.'" y="'.($this->height + $this->options['fontSize']).'" x="'.$labelXCoord.'">'.date($xLabelFormat, $labelX).'</text><!--'.$labelX.'-->';
+          if ($this->width - $labelXCoord > $this->options['fontSize'] * 2) {
+            if ($labelXCoord > $this->options['fontSize'] * 2) {
+              $gridText .= '<text text-anchor="middle" y="'.($this->height + $this->options['fontSize']).'" x="'.$labelXCoord.'">'.date($xLabelFormat, $labelX).'</text>';
+            } else {
+              $gridText .= '<text text-anchor="start" y="'.($this->height + $this->options['fontSize']).'" x="0">'.date($xLabelFormat, $labelX).'</text>';
+            };
+          } else {
+             $gridText .= '<text text-anchor="end" y="'.($this->height + $this->options['fontSize']).'" x="'.$this->width.'">'.date($xLabelFormat, $labelX).'</text>';
+          }
         }
       }
 
