@@ -11,7 +11,7 @@ namespace NeatCharts {
         'smoothed' => false,
         'fontSize' => 15,
         'yAxisEnabled' => true,
-        'xAxisEnabled' => false,
+        'xAxisEnabled' => true,
         'yAxisZero' => false,
         'filled' => false,
         'background' => 'none'

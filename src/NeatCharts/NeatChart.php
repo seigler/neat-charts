@@ -12,7 +12,8 @@ namespace NeatCharts {
       'yAxisEnabled' => true,
       'xAxisEnabled' => true,
       'yAxisZero' => false,
-      'background' => 'none'
+      'background' => 'none',
+      'shadow' => 'none'
     ];
 
     protected $width;
@@ -25,7 +26,6 @@ namespace NeatCharts {
     protected $yMax;
     protected $yRange;
     protected $padding = ['top'=>10, 'right'=>10, 'bottom'=>10, 'left'=>10];
-    protected $timeIntervals = [ 5 * 60, 60 * 60, 24 * 60 * 60, 28 * 60 * 60 ]; // 5 min, 1 hr, 24 hr, 1 month
 
     protected function labelFormat($float, $places, $minPlaces = 0) {
       $value = number_format($float, max($minPlaces, $places));
@@ -79,10 +79,12 @@ namespace NeatCharts {
     protected function buildGridLabelXML() {
       $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
       $this->height = $this->options['height'] - $this->padding['top'] - $this->padding['bottom'];
+      $gridText = '';
+      $gridLines = '';
       if ($this->options['yAxisEnabled']) {
-        $numLabels = 4 + ceil($this->height / $this->options['fontSize'] / 4);
-        $labelInterval = $this->yRange / $numLabels;
-        $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numLabels, 10)));
+        $numYLabels = 4 + ceil($this->height / $this->options['fontSize'] / 4);
+        $labelInterval = $this->yRange / $numYLabels;
+        $labelModulation = 10 ** (1 + floor(-log($this->yRange / $numYLabels, 10)));
         // 1 here is a fudge factor so we get multiples of 2.5 more often
         if (fmod($labelInterval * $labelModulation, 2.5) < fmod($labelInterval * $labelModulation, 2) + 1) {
           $labelModulation /= 2.5;
@@ -100,12 +102,12 @@ namespace NeatCharts {
         $this->width = $this->options['width'] - $this->padding['left'] - $this->padding['right'];
 
         // Top and bottom grid lines
-        $gridLines =
-          'M0,0 '.$this->width.',0 '.
-          ' M0,'.$this->height.','.$this->width.','.$this->height;
+        $gridLines .=
+          'M0 0 '.$this->width.' 0 '.
+          ' M0 '.$this->height.' L'.$this->width.' '.$this->height.' ';
 
         // Top and bottom grid labels
-        $gridText =
+        $gridText .=
           '<text text-anchor="end" x="'.(-0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4).'">'.($this->labelFormat($this->yMax, $labelPrecision + 1)).'</text>' .
           '<text text-anchor="end" x="'.(-0.4 * $this->options['fontSize']).'" y="'.($this->options['fontSize'] * 0.4 + $this->height).'">'.($this->labelFormat($this->yMin, $labelPrecision + 1)).'</text>';
 
@@ -131,32 +133,59 @@ namespace NeatCharts {
             ).','.$labelHeight.' '.$this->width.','.$labelHeight;
           }
         }
-
-        return '
-        <rect class="chart__background"
-          fill="'.( $this->options['background'] ).'"
-          x="-'.( $this->padding['left'] ).'"
-          y="-'.( $this->padding['top'] ).'"
-          width="'.( $this->options['width'] ).'"
-          height="'.( $this->options['height'] ).'"
-        />
-        <g class="chart__gridLines"
-          stroke="'.( $this->options['labelColor'] ).'"
-          stroke-opacity="0.4"
-          stroke-width="1"
-          vector-effect="non-scaling-stroke"
-          shape-rendering="crispEdges">
-          <path class="chart__gridLinePaths" d="'.( $gridLines ).'" />
-        </g>
-        <g class="chart__gridLabels"
-          fill="'.( $this->options['labelColor'] ).'"
-          font-family="monospace"
-          font-size="'.( $this->options['fontSize'] ).'px">
-          '.( $gridText ).'
-        </g>';
-      } else {
-        return '';
       }
+      if ($this->options['xAxisEnabled']) {
+        $timeIntervals = [
+          'minutes' => [60, 'g:ia'],
+          'hours' => [60 * 60, 'ga'],
+          'days' => [24 * 60 * 60, 'M j'],
+          'years' => [365 * 24 * 60 * 60, 'Y']
+        ];
+        $numXLabels = 1 + round($this->width / $this->options['fontSize'] / 10);
+        $scale = 'years';
+        $xLabelFormat = $timeIntervals[$scale][1];
+        foreach ($timeIntervals as $period => $duration) {
+          if ($this->xRange / $numXLabels < $duration[0]) {
+            break;
+          }
+          $scale = $period;
+          $xLabelFormat = $duration[1];
+        }
+        $xLabelInterval = $this->xRange / $numXLabels;
+        $xLabelInterval -= fmod($xLabelInterval, $timeIntervals[$scale][0]);
+        for (
+          $labelX = $this->xMin - fmod($this->xMin, $timeIntervals[$scale][0]) + $xLabelInterval;
+          $labelX < $this->xMax;
+          $labelX += $xLabelInterval
+        ) {
+          $labelXCoord = $this->transformX($labelX);
+          $gridLines .= 'M'.$labelXCoord.' 0 '.$labelXCoord.' '.$this->height.' ';
+          $xLabelAlignment = ($this->width - $labelXCoord > $this->options['fontSize'] * 2 ? ($labelXCoord > $this->options['fontSize'] * 2 ? 'middle' : 'start') : 'end');
+          $gridText .= '<text text-anchor="'.$xLabelAlignment.'" y="'.($this->height + $this->options['fontSize']).'" x="'.$labelXCoord.'">'.date($xLabelFormat, $labelX).'</text><!--'.$labelX.'-->';
+        }
+      }
+
+      return '<rect class="chart__background"
+        fill="'.( $this->options['background'] ).'"
+        x="-'.( $this->padding['left'] ).'"
+        y="-'.( $this->padding['top'] ).'"
+        width="'.( $this->options['width'] ).'"
+        height="'.( $this->options['height'] ).'"
+      />
+      <g class="chart__gridLines"
+        stroke="'.( $this->options['labelColor'] ).'"
+        stroke-opacity="0.4"
+        stroke-width="1"
+        vector-effect="non-scaling-stroke"
+        shape-rendering="crispEdges">
+        <path class="chart__gridLinePaths" d="'.( $gridLines ).'" />
+      </g>
+      <g class="chart__gridLabels"
+        fill="'.( $this->options['labelColor'] ).'"
+        font-family="monospace"
+        font-size="'.( $this->options['fontSize'] ).'px">
+        '.( $gridText ).'
+      </g>';
     }
 
     final public function __construct($chartData, $options = []) {
@@ -167,7 +196,8 @@ namespace NeatCharts {
     public function setOptions($options) {
       $this->options = array_replace($this->options, $options);
       $this->padding['left'] = $this->padding['right'] = $this->options['fontSize'] / 2;
-      $this->padding['top'] = $this->padding['bottom'] = $this->options['fontSize'];
+      $this->padding['top'] = $this->options['fontSize'];
+      $this->padding['bottom'] = $this->options['fontSize'] * 1.5;
     }
 
     public abstract function setData($chartData);

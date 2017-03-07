@@ -3,7 +3,7 @@ require_once 'vendor/autoload.php';
 
 function randomData($count = 20, $offsetMax = 100) {
   $randomData = [];
-  $duration = 60 * 5 + rand() * 60 * 60 * 24;
+  $duration = 60 * 5 + rand()/getRandMax() * 60 * 60 * 24;
   $begin = time() - $duration;
   $offset = $offsetMax * (rand()/getRandMax())**2;
   $scale = max(0.25 * $offset, 100 * rand() / getRandMax());

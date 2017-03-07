@@ -12,9 +12,10 @@ namespace NeatCharts {
         'labelColor' => '#000',
         'fontSize' => 15,
         'yAxisEnabled' => true,
-        'xAxisEnabled' => false,
+        'xAxisEnabled' => true,
         'yAxisZero' => false,
-        'background' => 'none'
+        'background' => 'none',
+        'shadow' => 'none'
       ];
       parent::setOptions($options);
     }
@@ -71,8 +72,20 @@ namespace NeatCharts {
         }
       }
 
-      $this->output = '<svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g class="neatchart">'.
+      $this->output = '<svg viewBox="-'.( $this->padding['left'] ).' -'.( $this->padding['top'] ).' '.( $this->options['width'] ).' '.( $this->options['height'] ).'" width="'.( $this->options['width'] ).'" height="'.( $this->options['height'] ).'" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">'.
+        ( $this->options['shadow'] == 'none' ? '' : '      <defs>
+        <filter id="shadow" x="-5000%" y="-5000%" width="10000%" height="10000%">
+          <feFlood result="flood" flood-color="'.$this->options['shadow'].'" flood-opacity="0.75"></feFlood>
+          <feComposite in="flood" result="mask" in2="SourceAlpha" operator="in"></feComposite>
+          <feMorphology in="mask" result="dilated" operator="dilate" radius="2"></feMorphology>
+          <feGaussianBlur in="dilated" result="blurred" stdDeviation="6"></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="blurred"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
+      </defs>').'
+      <g class="neatchart"'.( $this->options['shadow'] == 'none' ? '' : 'filter="url(#shadow)"').'>'.
       $gridLabelXML.'
       <g
         class="chart__bars"
